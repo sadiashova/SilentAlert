@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SilentAlert</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; }
+        /* Smooth Scrolling for Menu Links */
+        html { scroll-behavior: smooth; }
+        .logo-pulse { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-gray-50 h-screen overflow-hidden">
+
+    <div id="auth-container" class="h-full w-full overflow-y-auto">
+        
+        <div id="landing-page" class="auth-page min-h-screen flex flex-col bg-white">
+            
+            <nav class="w-full bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 px-6 md:px-12 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i class="fas fa-wave-square text-red-600 text-3xl"></i>
+                    <span class="text-2xl font-extrabold text-slate-900">Silent<span class="text-red-600">Alert</span></span>
+                </div>
+
+                <div class="hidden md:flex gap-8 text-gray-600 font-semibold text-sm uppercase tracking-wide">
+                    <a href="#home" class="hover:text-red-600 transition">Home</a>
+                    <a href="#features" class="hover:text-red-600 transition">Features</a>
+                    <a href="#about" class="hover:text-red-600 transition">About Us</a>
+                    <a href="#contact" class="hover:text-red-600 transition">Contact</a>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="showAuth('signin-page')" class="text-slate-900 font-bold hover:text-red-600 transition">Login</button>
+                    <button onclick="showAuth('register-page')" class="px-6 py-2 bg-slate-900 text-white rounded-full font-bold shadow-md hover:bg-slate-800 transition transform hover:scale-105">Get Started</button>
+                </div>
+            </nav>
+
+            <section id="home" class="flex-1 flex flex-col items-center justify-center text-center px-4 py-24 bg-gradient-to-b from-white to-gray-100 relative overflow-hidden">
+                <i class="fas fa-microphone-slash text-[15rem] text-gray-100 absolute -left-10 top-20 -z-0"></i>
+                <i class="fas fa-volume-up text-[15rem] text-gray-100 absolute -right-10 bottom-20 -z-0"></i>
+
+                <div class="z-10 relative max-w-4xl mx-auto">
+                    <div class="inline-block px-4 py-1 rounded-full bg-red-50 text-red-600 font-bold text-xs mb-4 border border-red-100 uppercase tracking-wider">
+                        IoT Based Monitoring System
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 leading-tight mb-6">
+                        Maintaining Silence <br> with <span class="text-red-600">Smart Technology</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                        SilentAlert ensures a noise-free environment in libraries, classrooms, and hospitals using advanced sensors and real-time visualization.
+                    </p>
+                    <button onclick="showAuth('register-page')" class="px-10 py-4 bg-red-600 text-white rounded-lg shadow-xl hover:bg-red-700 font-bold text-lg transition flex items-center gap-3 mx-auto">
+                        Start Monitoring <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <section id="features" class="py-20 bg-white px-6">
+                <div class="container mx-auto max-w-6xl">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl font-bold text-slate-800">Why Choose SilentAlert?</h2>
+                        <p class="text-gray-500 mt-2">Advanced features designed for effective noise control.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="p-8 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition border border-gray-100 text-center group">
+                            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3">Real-time Data</h3>
+                            <p class="text-gray-500">Monitor decibel levels instantly from multiple zones with live graphical updates.</p>
+                        </div>
+                        <div class="p-8 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition border border-gray-100 text-center group">
+                            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3">Zone Heatmap</h3>
+                            <p class="text-gray-500">Visualize noise intensity on a digital floor plan to identify noisy areas quickly.</p>
+                        </div>
+                        <div class="p-8 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition border border-gray-100 text-center group">
+                            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3">Auto Reports</h3>
+                            <p class="text-gray-500">Generate and export detailed PDF reports of noise incidents for administrative action.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="py-20 bg-slate-900 text-white px-6">
+                <div class="container mx-auto max-w-4xl text-center">
+                    <h2 class="text-3xl font-bold mb-6">About Our Mission</h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        SilentAlert was developed to address the growing issue of noise pollution in educational and medical institutions. Our team is dedicated to building IoT solutions that foster better concentration and a peaceful environment for everyone.
+                    </p>
+                    <div class="flex justify-center gap-4">
+                        <div class="text-center">
+                            <h4 class="text-4xl font-bold text-red-500">99%</h4>
+                            <span class="text-sm text-gray-400">Accuracy</span>
+                        </div>
+                        <div class="w-px bg-gray-700 mx-4"></div>
+                        <div class="text-center">
+                            <h4 class="text-4xl font-bold text-red-500">24/7</h4>
+                            <span class="text-sm text-gray-400">Monitoring</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="py-20 bg-gray-50 px-6">
+                <div class="container mx-auto max-w-xl bg-white p-10 rounded-2xl shadow-lg">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-slate-800">Contact Us</h2>
+                        <p class="text-gray-500">Have questions? Get in touch with us.</p>
+                    </div>
+                    <form class="space-y-4" onsubmit="alert('Message Sent!'); return false;">
+                        <input type="text" placeholder="Your Name" class="w-full border p-3 rounded focus:outline-none focus:border-red-500">
+                        <input type="email" placeholder="Your Email" class="w-full border p-3 rounded focus:outline-none focus:border-red-500">
+                        <textarea placeholder="Message" rows="4" class="w-full border p-3 rounded focus:outline-none focus:border-red-500"></textarea>
+                        <button type="submit" class="w-full bg-slate-900 text-white p-3 rounded font-bold hover:bg-slate-800 transition">Send Message</button>
+                    </form>
+                </div>
+            </section>
+
+            <footer class="bg-slate-950 text-white py-12 border-t border-slate-900">
+                <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="text-center md:text-left">
+                        <h2 class="text-2xl font-bold flex items-center justify-center md:justify-start gap-2">
+                            <i class="fas fa-wave-square text-red-500"></i>
+                            Silent<span class="text-red-500">Alert</span>
+                        </h2>
+                        <p class="text-gray-400 text-sm mt-2">Smart Acoustic Monitoring System.</p>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <a href="https://www.facebook.com/sadia.zaman.7393264" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/sadia-zaman-b5861b2ba/" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-700 hover:text-white transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://www.instagram.com/sadia._.zaman/" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-pink-600 hover:text-white transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="text-center text-gray-600 text-sm mt-8">
+                    &copy; 2025 SilentAlert. All rights reserved.
+                </div>
+            </footer>
+        </div>
+
+        <div id="signin-page" class="auth-page hidden min-h-screen flex items-center justify-center bg-gray-50">
+            <div class="bg-white p-10 rounded-2xl shadow-2xl w-96 border-t-4 border-red-600 relative">
+                <button onclick="showAuth('landing-page')" class="absolute top-4 right-4 text-gray-400 hover:text-slate-900"><i class="fas fa-times"></i></button>
+                <div class="flex justify-center items-center gap-2 mb-6">
+                    <i class="fas fa-wave-square text-red-600 text-2xl"></i>
+                    <h2 class="text-2xl font-bold">SilentAlert</h2>
+                </div>
+                <h3 class="text-xl font-semibold mb-6 text-center text-gray-700">Login to Dashboard</h3>
+                <form id="login-form" class="space-y-4">
+                    <input id="login-email" type="email" placeholder="Email" class="w-full border p-3 rounded focus:outline-none focus:border-red-500" required>
+                    <input id="login-password" type="password" placeholder="Password" class="w-full border p-3 rounded focus:outline-none focus:border-red-500" required>
+                    <button type="submit" class="w-full bg-red-600 text-white p-3 rounded font-bold hover:bg-red-700 transition">LOGIN</button>
+                </form>
+                <p class="mt-4 text-center text-sm cursor-pointer hover:text-red-600" onclick="showAuth('register-page')">Create New Account</p>
+                <p class="mt-2 text-center text-xs text-gray-400 cursor-pointer" onclick="showAuth('landing-page')">Back Home</p>
+            </div>
+        </div>
+
+        <div id="register-page" class="auth-page hidden min-h-screen flex items-center justify-center bg-gray-50">
+            <div class="bg-white p-10 rounded-2xl shadow-2xl w-96 border-t-4 border-slate-800 relative">
+                <button onclick="showAuth('landing-page')" class="absolute top-4 right-4 text-gray-400 hover:text-slate-900"><i class="fas fa-times"></i></button>
+                <h2 class="text-2xl font-bold mb-6 text-center">Register</h2>
+                <form id="register-form" class="space-y-4">
+                    <input id="register-email" type="email" placeholder="Email" class="w-full border p-3 rounded" required>
+                    <input id="register-password" type="password" placeholder="Password" class="w-full border p-3 rounded" required>
+                    <button type="submit" class="w-full bg-slate-800 text-white p-3 rounded font-bold hover:bg-slate-900 transition">REGISTER</button>
+                </form>
+                <p class="mt-4 text-center text-sm cursor-pointer hover:text-red-600" onclick="showAuth('signin-page')">Already have an account? Login</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="flex h-screen overflow-hidden hidden">
+        
+        <nav class="w-64 bg-slate-900 text-gray-300 flex flex-col shadow-2xl z-10">
+            <div class="p-6 flex items-center gap-3 border-b border-gray-800 bg-slate-950">
+                <i class="fas fa-wave-square text-red-500 text-xl"></i>
+                <span class="text-xl font-bold text-white tracking-wider">Silent<span class="text-red-500">Alert</span></span>
+            </div>
+            
+            <div class="flex-1 p-4 space-y-2 mt-2">
+                <a href="#" onclick="navigateTo('dashboard', this)" class="sidebar-link active flex items-center gap-3 p-3 rounded hover:bg-slate-800 transition"><i class="fas fa-chart-pie w-5"></i> Dashboard</a>
+                <a href="#" onclick="navigateTo('heatmap', this)" class="sidebar-link flex items-center gap-3 p-3 rounded hover:bg-slate-800 transition"><i class="fas fa-map-marked-alt w-5"></i> Heatmap</a>
+                <a href="#" onclick="navigateTo('setup', this)" class="sidebar-link flex items-center gap-3 p-3 rounded hover:bg-slate-800 transition"><i class="fas fa-sliders-h w-5"></i> Zone Setup</a>
+                <a href="#" onclick="navigateTo('reports', this)" class="sidebar-link flex items-center gap-3 p-3 rounded hover:bg-slate-800 transition"><i class="fas fa-file-invoice w-5"></i> Reports</a>
+            </div>
+
+            <div class="p-4 border-t border-gray-800">
+                <button onclick="logout()" class="flex items-center gap-2 text-red-400 hover:text-white transition w-full p-2"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </nav>
+
+        <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden">
+            <header class="h-16 bg-white shadow-sm flex justify-between items-center px-8 z-0">
+                <h2 id="page-title" class="text-2xl font-bold text-slate-800">Overview</h2>
+                <div class="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold border border-green-200">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span>System Live</span>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-8">
+                
+                <div id="page-dashboard" class="page-content space-y-6">
+                    <div id="priority-alert-box" class="hidden bg-red-50 border-l-4 border-red-600 p-6 rounded shadow-sm flex items-center justify-between animate-bounce">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-red-100 p-3 rounded-full"><i class="fas fa-bell text-red-600 text-2xl"></i></div>
+                            <div>
+                                <h3 class="text-lg font-bold text-red-900">CRITICAL NOISE DETECTED!</h3>
+                                <p class="text-red-800">High noise level in <span id="alert-room-name" class="font-bold underline">--</span> (<span id="alert-db-val">0</span> dB).</p>
+                            </div>
+                        </div>
+                        <span class="bg-red-600 text-white text-xs px-3 py-1 rounded-full uppercase font-bold tracking-wide">Action Taken</span>
+                    </div>
+
+                    <div id="live-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="col-span-4 text-center text-gray-400 py-10">Connecting to sensors...</div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="font-bold text-lg text-slate-700 mb-4">Real-time Noise Trends</h3>
+                        <div id="bar-chart-container" class="h-64 flex items-end justify-between space-x-1 border-b border-gray-300 pb-1"></div>
+                    </div>
+                </div>
+
+                <div id="page-heatmap" class="page-content hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                        <h1 class="text-3xl font-bold text-slate-800">Live Heatmap Visualization</h1>
+                        <div class="flex gap-4 text-xs font-bold bg-white px-4 py-2 rounded-full shadow-sm border border-gray-200">
+                            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-green-500 mr-2 shadow-sm"></span> Normal (&lt;60dB)</span>
+                            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-yellow-500 mr-2 shadow-sm"></span> Warning (60-70dB)</span>
+                            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-red-600 mr-2 shadow-sm animate-pulse"></span> Critical (&gt;70dB)</span>
+                        </div>
+                    </div>
+                    <div class="relative w-full h-[550px] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden relative group" style="background-image: url('./map.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+                        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]"></div>
+                        <div id="heatmap-overlay" class="absolute inset-0 z-0"></div>
+                        <div id="heatmap-labels" class="absolute inset-0 z-10 pointer-events-none"></div>
+                    </div>
+                </div>
+
+                <div id="page-setup" class="page-content hidden space-y-8">
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                        <h2 class="text-xl font-bold mb-6 text-slate-800 border-b pb-2">Add New Silent Zone</h2>
+                        <form id="zone-form" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <input id="zone-name" type="text" placeholder="Zone Name (e.g. Library)" class="border p-3 rounded focus:ring-2 focus:ring-red-500 outline-none" required>
+                            <input id="zone-location" type="text" placeholder="Location (e.g. 2nd Floor)" class="border p-3 rounded focus:ring-2 focus:ring-red-500 outline-none" required>
+                            <input id="zone-threshold" type="number" placeholder="Threshold (dB)" class="border p-3 rounded focus:ring-2 focus:ring-red-500 outline-none" value="60" required>
+                            <button type="submit" class="bg-slate-800 text-white p-3 rounded font-bold hover:bg-slate-900 transition flex justify-center items-center gap-2"><i class="fas fa-plus"></i> Add Zone</button>
+                        </form>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                        <h2 class="text-xl font-bold mb-6 text-slate-800">Existing Zones</h2>
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                                <tr>
+                                    <th class="p-4">Name</th><th class="p-4">Location</th><th class="p-4">Threshold</th><th class="p-4 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="zones-table-body" class="text-gray-700 text-sm divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="page-reports" class="page-content hidden">
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-slate-800">Incident Logs (Recent Activity)</h2>
+                            <button onclick="downloadPDF()" class="bg-red-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-red-700 shadow flex items-center gap-2">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto h-[500px]">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-100 text-gray-600 sticky top-0 z-10">
+                                    <tr>
+                                        <th class="p-3 border-b">Timestamp</th><th class="p-3 border-b">Library</th><th class="p-3 border-b">Classroom</th><th class="p-3 border-b">Lab</th><th class="p-3 border-b">Conf. Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reports-table-body" class="text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
