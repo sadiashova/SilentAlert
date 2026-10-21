@@ -3,9 +3,7 @@
  * Centralized HTTP service managing all server communication, JWT headers & error handling.
  */
 
-const API_BASE_URL = window.location.origin.includes('localhost') 
-    ? 'http://localhost:5000/api' 
-    : '/api';
+const API_BASE_URL = (window.location.port === '5000' || !window.location.port) ? '/api' : 'http://' + window.location.hostname + ':5000/api';
 
 const api = {
     // Helper to get auth headers
@@ -142,4 +140,6 @@ const api = {
 };
 
 window.api = api;
+
+
 

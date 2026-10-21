@@ -17,14 +17,20 @@ const connectDB = async () => {
     if (!cached.promise) {
         const opts = {
             bufferCommands: false,
-            serverSelectionTimeoutMS: 5000
+            serverSelectionTimeoutMS: 4000
         };
 
         cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
             console.log(`✅ MongoDB Connected Successfully: ${mongooseInstance.connection.host}`);
             return mongooseInstance;
         }).catch((err) => {
-            console.error(`❌ MongoDB Connection Error: ${err.message}`);
+            console.log('-------------------------------------------------------');
+            console.log('⚠️  MongoDB Local Connection (localhost:27017) not found.');
+            console.log('💡 To use a Cloud Database (MongoDB Atlas):');
+            console.log('   1. Create a free M0 cluster at https://mongodb.com/atlas');
+            console.log('   2. Add your connection string to the .env file:');
+            console.log('      MONGO_URI=mongodb+srv://<user>:<password>@cluster0.mongodb.net/silentalert_db');
+            console.log('-------------------------------------------------------');
             cached.promise = null;
             return null;
         });

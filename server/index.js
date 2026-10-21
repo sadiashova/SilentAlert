@@ -45,7 +45,6 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/stats', statsRoutes);
 
 // --- BACKWARD COMPATIBILITY ENDPOINTS ---
-// (Guarantees any legacy script or Arduino sketch continues working uninterrupted)
 app.post('/api/register', authController.register);
 app.post('/api/login', authController.login);
 
@@ -72,14 +71,16 @@ app.use((req, res, next) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Start server
+// Start server (bind to 0.0.0.0 for Local Area Network & Mobile testing)
 if (process.env.NODE_ENV !== 'test') {
-    app.listen(PORT, () => {
-        console.log(`=======================================================`);
-        console.log(`🚀 SilentAlert Engine Running on http://localhost:${PORT}`);
-        console.log(`📡 IoT Acoustic API Live & Connected to MongoDB`);
-        console.log(`🔐 Authentication: JWT + Bcrypt`);
-        console.log(`=======================================================`);
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log('=======================================================');
+        console.log(`🚀 SilentAlert Engine Active on Port ${PORT}`);
+        console.log(`💻 Local (PC):    http://localhost:${PORT}`);
+        console.log(`📱 Mobile (Wi-Fi): http://192.168.0.100:${PORT}`);
+        console.log('📡 IoT Acoustic API Live & Connected');
+        console.log('🔐 Authentication: JWT + Bcrypt + Firebase');
+        console.log('=======================================================');
     });
 }
 
