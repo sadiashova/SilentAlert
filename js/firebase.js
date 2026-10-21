@@ -136,3 +136,4 @@ const firebaseAuth = {
 };
 
 window.firebaseAuth = firebaseAuth;
+

@@ -1,17 +1,42 @@
 const mongoose = require('mongoose');
 
+// Cache connection across serverless invocations (for Vercel / Cloud Functions)
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+}
+
 const connectDB = async () => {
-    try {
-        const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/silentalert_db';
-        const conn = await mongoose.connect(uri);
-        console.log(`✅ MongoDB Connected Successfully: ${conn.connection.host}`);
-        return conn;
-    } catch (error) {
-        console.error(`❌ MongoDB Connection Error: ${error.message}`);
-        console.log('💡 Tip: Make sure MongoDB Community Server is running on your system.');
-        // Don't crash immediately in development, allow retry or fallback
+    if (cached.conn) {
+        return cached.conn;
     }
+
+    const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/silentalert_db';
+
+    if (!cached.promise) {
+        const opts = {
+            bufferCommands: false,
+            serverSelectionTimeoutMS: 5000
+        };
+
+        cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
+            console.log(`✅ MongoDB Connected Successfully: ${mongooseInstance.connection.host}`);
+            return mongooseInstance;
+        }).catch((err) => {
+            console.error(`❌ MongoDB Connection Error: ${err.message}`);
+            cached.promise = null;
+            return null;
+        });
+    }
+
+    try {
+        cached.conn = await cached.promise;
+    } catch (e) {
+        cached.promise = null;
+    }
+
+    return cached.conn;
 };
 
 module.exports = connectDB;
-
