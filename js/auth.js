@@ -47,6 +47,9 @@ const auth = {
         this.user = null;
         localStorage.removeItem('silentalert_token');
         localStorage.removeItem('silentalert_user');
+        if (window.firebaseAuth && typeof window.firebaseAuth.signOut === 'function') {
+            window.firebaseAuth.signOut();
+        }
         this.updateNavState();
         if (window.app && typeof window.app.showPage === 'function') {
             window.app.showPage('home');
@@ -266,3 +269,4 @@ const auth = {
 };
 
 window.auth = auth;
+

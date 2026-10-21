@@ -82,3 +82,4 @@ if (SerialPort && ReadlineParser) {
         console.error(`❌ Could not open ${COM_PORT}: ${err.message}`);
     }
 }
+

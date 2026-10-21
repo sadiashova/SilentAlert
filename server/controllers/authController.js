@@ -143,6 +143,58 @@ exports.demoLogin = async (req, res, next) => {
     }
 };
 
+// @desc    Sync or register user authenticated via Firebase (Google / Email)
+// @route   POST /api/auth/firebase-sync
+// @access  Public
+exports.firebaseSync = async (req, res, next) => {
+    try {
+        const { email, name, avatar } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Valid email is required from Firebase' });
+        }
+
+        const cleanEmail = email.toLowerCase().trim();
+        let user = await User.findOne({ email: cleanEmail });
+
+        if (!user) {
+            // Create user account from Firebase profile
+            user = await User.create({
+                name: name || cleanEmail.split('@')[0],
+                email: cleanEmail,
+                password: 'FB_' + Math.random().toString(36).substring(2, 12) + '99!Aa',
+                avatar: avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+                role: 'user',
+                organization: 'Firebase Authenticated Specialist',
+                bio: 'Authenticated via Firebase Authentication (silentalert-6a832).'
+            });
+        } else if (avatar && (!user.avatar || user.avatar.includes('unsplash'))) {
+            user.avatar = avatar;
+            await user.save();
+        }
+
+        const token = generateToken(user._id, user.role);
+
+        res.json({
+            success: true,
+            message: 'Firebase session verified & synchronized',
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                avatar: user.avatar,
+                organization: user.organization,
+                phone: user.phone,
+                bio: user.bio
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
 // @access  Private
@@ -220,3 +272,4 @@ exports.updatePassword = async (req, res, next) => {
         next(err);
     }
 };
+

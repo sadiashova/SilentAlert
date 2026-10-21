@@ -10,3 +10,4 @@ router.put('/:id', protect, updateZone);
 router.delete('/:id', protect, deleteZone);
 
 module.exports = router;
+

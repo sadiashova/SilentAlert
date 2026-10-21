@@ -58,3 +58,4 @@ node hardware/serial_telemetry_bridge.js /dev/ttyUSB0
 ```
 
 The bridge reads JSON packets emitted by the Arduino and POSTs them to `http://localhost:5000/api/noise`. The web dashboard updates instantly in real time!
+

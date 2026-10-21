@@ -275,3 +275,4 @@ const charts = {
 };
 
 window.charts = charts;
+

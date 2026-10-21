@@ -7,3 +7,4 @@ router.get('/', getNoiseLogs);
 router.get('/analytics', getNoiseAnalytics);
 
 module.exports = router;
+

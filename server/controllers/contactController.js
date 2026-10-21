@@ -46,3 +46,4 @@ exports.getContacts = async (req, res, next) => {
         next(err);
     }
 };
+

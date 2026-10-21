@@ -66,6 +66,10 @@ const api = {
             method: 'POST',
             body: JSON.stringify({ role })
         }),
+        firebaseSync: (payload) => api.request('/auth/firebase-sync', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        }),
         getMe: () => api.request('/auth/me'),
         updateProfile: (profileData) => api.request('/auth/profile', {
             method: 'PUT',
@@ -138,3 +142,4 @@ const api = {
 };
 
 window.api = api;
+

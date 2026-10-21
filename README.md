@@ -272,3 +272,4 @@ Open **[http://localhost:5000](http://localhost:5000)** in your browser. The app
 ---
 
 **Developed with care for acoustic wellness and smart IoT environments.**
+

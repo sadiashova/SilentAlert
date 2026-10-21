@@ -7,3 +7,4 @@ router.post('/', submitContact);
 router.get('/', protect, adminOnly, getContacts);
 
 module.exports = router;
+
