@@ -5,6 +5,9 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[secrets_scanning]
+  omit_keys = ["NODE_ENV", "JWT_SECRET", "MONGO_URI"]
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
