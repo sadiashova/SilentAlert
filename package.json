@@ -35,5 +35,8 @@
                             "@serialport/parser-readline":  "^13.0.0",
                             "node-fetch":  "^2.7.0",
                             "firebase":  "^13.1.0"
-                        }
+                        },
+    "engines":  {
+                    "node":  "\u003e=18.0.0 \u003c23.0.0"
+                }
 }

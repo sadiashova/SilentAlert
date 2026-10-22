@@ -22,7 +22,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to Database (only in standalone mode)
-if (!process.env.VERCEL) { connectDB(); }
+if (!process.env.VERCEL) { connectDB(); } else { app.use(async (req, res, next) => { await connectDB(); next(); }); }
 
 // Core Middleware
 app.use(cors({
