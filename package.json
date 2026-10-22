@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node server/index.js",
     "seed": "node server/seed.js",
+    "simulate": "node arduino/noise-simulator.js",
+    "simulate:fast": "node arduino/noise-simulator.js --fast",
+    "bridge": "node arduino/serial-bridge.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
