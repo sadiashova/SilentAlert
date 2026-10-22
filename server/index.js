@@ -22,7 +22,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to Database (only in standalone mode)
-if (!process.env.VERCEL) { connectDB(); } else { app.use(async (req, res, next) => { await connectDB(); next(); }); }
+if (require.main === module) { connectDB(); } else { app.use(async (req, res, next) => { try { await connectDB(); } catch(e){} next(); }); }
 
 // Core Middleware
 app.use(cors({
@@ -72,7 +72,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Start server (bind to 0.0.0.0 for Local Area Network & Mobile testing)
-if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
+if (require.main === module) {
     app.listen(PORT, '0.0.0.0', () => {
         console.log('=======================================================');
         console.log(`🚀 SilentAlert Engine Active on Port ${PORT}`);
