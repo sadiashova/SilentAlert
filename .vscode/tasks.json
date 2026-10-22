@@ -1,0 +1,63 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🔨 Build Arduino Nano Sketch (arduino-cli)",
+      "type": "shell",
+      "command": "arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328old --output-dir arduino/build arduino/silentalert_nano.ino",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🚀 Start SilentAlert Server",
+      "type": "shell",
+      "command": "npm start",
+      "group": "none",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🎮 Run Noise Simulator (sends data to server)",
+      "type": "shell",
+      "command": "node arduino/noise-simulator.js",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🌉 Run Serial Bridge (real Arduino)",
+      "type": "shell",
+      "command": "node arduino/serial-bridge.js ${input:comPort}",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "comPort",
+      "type": "promptString",
+      "description": "Arduino COM Port (e.g. COM3, COM4)",
+      "default": "COM3"
+    }
+  ]
+}
+

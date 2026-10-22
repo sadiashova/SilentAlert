@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SilentAlert Main Application Controller
  * Handles SPA page routing, explore page filtering/pagination, zone details modal,
  * dashboard tables, live polling, and hardware telemetry simulation.
@@ -67,6 +67,7 @@ const app = {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Page specific initialization hooks
+        charts.stopLiveUpdates();
         if (pageId === 'explore') {
             this.loadExploreZones();
         } else if (pageId === 'dashboard') {
@@ -104,6 +105,7 @@ const app = {
         // Tab-specific loading
         if (tabId === 'overview') {
             charts.initDashboardCharts();
+            charts.startLiveUpdates();
             this.loadDashboardZoneCards();
         } else if (tabId === 'zones') {
             this.loadAdminZonesTable();
@@ -234,7 +236,7 @@ const app = {
                 <div class="p-5 flex-1 flex flex-col">
                     <div class="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
                         <span class="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">${zone.category || 'Facility'}</span>
-                        <span>•</span>
+                        <span>â€¢</span>
                         <span class="truncate"><i class="fas fa-map-marker-alt text-red-500 mr-1"></i>${zone.location}</span>
                     </div>
 
@@ -468,7 +470,7 @@ const app = {
                                         <img src="${rel.image}" class="w-12 h-12 rounded-lg object-cover">
                                         <div class="overflow-hidden">
                                             <div class="text-xs font-bold text-slate-800 dark:text-white truncate">${rel.name}</div>
-                                            <div class="text-[11px] text-slate-500">${rel.currentLevel} dB • Limit ${rel.threshold} dB</div>
+                                            <div class="text-[11px] text-slate-500">${rel.currentLevel} dB â€¢ Limit ${rel.threshold} dB</div>
                                         </div>
                                     </div>
                                 `).join('')}

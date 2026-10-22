@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SilentAlert Interactive Chart Engine
  * Powered by Chart.js for real-time acoustic telemetry visualization.
  */
@@ -266,6 +266,41 @@ const charts = {
                 }
             }
         });
+    },
+
+    startLiveUpdates() {
+        if (this._liveTimer) clearInterval(this._liveTimer);
+        this._liveTimer = setInterval(async () => {
+            try {
+                const data = await api.noise.getAnalytics();
+                // Update bar chart
+                if (this.barChart && data.zoneAverages?.length) {
+                    this.barChart.data.datasets[0].data = data.zoneAverages.map(z => z.current);
+                    this.barChart.data.datasets[0].backgroundColor = data.zoneAverages.map(z =>
+                        z.current >= 70 ? '#ef4444' : z.current >= 60 ? '#f59e0b' : '#10b981'
+                    );
+                    this.barChart.update('none');
+                }
+                // Update line chart
+                if (this.lineChart && data.timeSeries?.length) {
+                    const last20 = data.timeSeries.slice(-20);
+                    this.lineChart.data.labels = last20.map(t => t.timestamp);
+                    this.lineChart.data.datasets[0].data = last20.map(t => t.library || 0);
+                    this.lineChart.data.datasets[1].data = last20.map(t => t.classroom || 0);
+                    this.lineChart.data.datasets[2].data = last20.map(t => t.lab || 0);
+                    this.lineChart.update('none');
+                }
+                // Update pie chart
+                if (this.pieChart && data.statusDistribution) {
+                    const d = data.statusDistribution;
+                    this.pieChart.data.datasets[0].data = [d.normal || 0, d.warning || 0, d.critical || 0];
+                    this.pieChart.update('none');
+                }
+            } catch(e) {}
+        }, 3000);
+    },
+    stopLiveUpdates() {
+        if (this._liveTimer) { clearInterval(this._liveTimer); this._liveTimer = null; }
     },
 
     // Called when theme toggles

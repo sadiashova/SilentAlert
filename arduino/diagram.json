@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "author": "SilentAlert IoT Noise Monitor",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-arduino-nano",
+      "id": "nano",
+      "top": 100,
+      "left": 160,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot1",
+      "top": 60,
+      "left": -60,
+      "attrs": { "label": "MAX4466 (Noise Level)" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_red",
+      "top": 60,
+      "left": 380,
+      "attrs": { "color": "red", "label": "CRITICAL >70dB" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 110,
+      "left": 380,
+      "rotate": 90,
+      "attrs": { "value": "220", "label": "220Ω" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_yellow",
+      "top": 160,
+      "left": 380,
+      "attrs": { "color": "yellow", "label": "WARNING 60-70dB" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 210,
+      "left": 380,
+      "rotate": 90,
+      "attrs": { "value": "220", "label": "220Ω" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_green",
+      "top": 260,
+      "left": 380,
+      "attrs": { "color": "green", "label": "NORMAL <60dB" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": 310,
+      "left": 380,
+      "rotate": 90,
+      "attrs": { "value": "220", "label": "220Ω" }
+    }
+  ],
+  "connections": [
+    ["pot1:VCC", "nano:5V", "red", []],
+    ["pot1:GND", "nano:GND.1", "black", []],
+    ["pot1:SIG", "nano:A0", "green", []],
+
+    ["nano:13", "led_red:A", "red", []],
+    ["led_red:C", "r1:1", "red", []],
+    ["r1:2", "nano:GND.2", "black", []],
+
+    ["nano:12", "led_yellow:A", "yellow", []],
+    ["led_yellow:C", "r2:1", "yellow", []],
+    ["r2:2", "nano:GND.2", "black", []],
+
+    ["nano:11", "led_green:A", "green", []],
+    ["led_green:C", "r3:1", "green", []],
+    ["r3:2", "nano:GND.3", "black", []]
+  ]
+}
+

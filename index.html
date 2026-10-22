@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -50,8 +50,14 @@
             
             <!-- Brand Logo -->
             <a href="#home" onclick="app.showPage('home')" class="flex items-center gap-3 group focus:outline-none">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-slate-900 via-slate-800 to-red-600 flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform">
-                    <i class="fas fa-wave-square text-xl animate-pulse"></i>
+                <div class="relative w-11 h-11">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-slate-900 via-red-800 to-red-500 flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12 Q5 6 8 12 Q11 18 14 12 Q17 6 20 12" />
+                            <circle cx="20" cy="12" r="2" fill="currentColor" stroke="none"/>
+                        </svg>
+                    </div>
+                    <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
                 </div>
                 <div>
                     <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Silent<span class="text-red-600">Alert</span></span>
@@ -384,7 +390,7 @@
                         <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-500 transition">
                             <i class="fas fa-book-reader text-red-600 text-3xl mb-4"></i>
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">University Libraries</h3>
-                            <p class="text-xs text-slate-500 leading-relaxed mb-3">Enforcing 45–55 dB quiet study zones to promote academic concentration during finals.</p>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-3">Enforcing 45â€“55 dB quiet study zones to promote academic concentration during finals.</p>
                             <span class="text-[11px] font-bold text-red-600">Max Limit: 55 dB &rarr;</span>
                         </div>
 
@@ -504,7 +510,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border-l-4 border-emerald-500 shadow-sm">
-                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider block mb-1">30 – 50 dB (Optimal Quiet)</span>
+                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider block mb-1">30 â€“ 50 dB (Optimal Quiet)</span>
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Whisper & Library Ambience</h3>
                             <p class="text-xs text-slate-500 leading-relaxed">
                                 Ideal for intellectual focus, meditation, and deep patient sleep. SilentAlert targets this nominal range across all study halls.
@@ -512,7 +518,7 @@
                         </div>
 
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border-l-4 border-amber-500 shadow-sm">
-                            <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">60 – 70 dB (Moderate Noise)</span>
+                            <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">60 â€“ 70 dB (Moderate Noise)</span>
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Conversational & Office Chatter</h3>
                             <p class="text-xs text-slate-500 leading-relaxed">
                                 Normal in common cafeterias, but causes reading fatigue and error spikes in exam halls and medical ICU pavilions.
@@ -686,12 +692,12 @@
                                 <span class="text-xl font-black text-white">Silent<span class="text-red-500">Alert</span></span>
                             </div>
                             <p class="text-xs text-slate-400 leading-relaxed">
-                                Enterprise-grade IoT acoustic monitoring and ambient noise compliance grid powered by Arduino Nano edge nodes.
+                                A real-time IoT acoustic monitoring platform built with Arduino Nano sensors. Detecting noise violations across libraries, classrooms, and labs.
                             </p>
-                            <div class="flex gap-3 text-slate-300">
-                                <a href="https://github.com" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-red-600 hover:text-white flex items-center justify-center transition" title="GitHub"><i class="fab fa-github text-xs"></i></a>
-                                <a href="https://linkedin.com" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-blue-600 hover:text-white flex items-center justify-center transition" title="LinkedIn"><i class="fab fa-linkedin-in text-xs"></i></a>
-                                <a href="https://twitter.com" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-sky-500 hover:text-white flex items-center justify-center transition" title="Twitter"><i class="fab fa-twitter text-xs"></i></a>
+                            <div class="flex gap-3 text-slate-300 flex-wrap">
+                                <a href="https://www.linkedin.com/in/sadia-zaman-b5861b2ba" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-blue-600 hover:text-white flex items-center justify-center transition" title="LinkedIn - Sadia Zaman"><i class="fab fa-linkedin-in text-xs"></i></a>
+                                <a href="https://www.facebook.com/sadia.zaman.7393264" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-blue-500 hover:text-white flex items-center justify-center transition" title="Facebook - Sadia Zaman"><i class="fab fa-facebook-f text-xs"></i></a>
+                                <a href="https://www.instagram.com/sadia._.zaman/" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-pink-600 hover:text-white flex items-center justify-center transition" title="Instagram - Sadia Zaman"><i class="fab fa-instagram text-xs"></i></a>
                             </div>
                         </div>
 
@@ -716,19 +722,21 @@
                         </div>
 
                         <div>
-                            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Contact Specialist</h4>
-                            <p class="text-xs text-slate-400 mb-2"><i class="fas fa-envelope text-red-500 mr-2"></i>support@silentalert.io</p>
-                            <p class="text-xs text-slate-400 mb-2"><i class="fas fa-phone text-red-500 mr-2"></i>+1 (555) 789-0123</p>
-                            <p class="text-xs text-slate-400"><i class="fas fa-map-marker-alt text-red-500 mr-2"></i>Metropolitan Smart Campus, Bldg 4</p>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Creator</h4>
+                            <p class="text-sm font-bold text-white mb-1">Sadia Zaman</p>
+                            <p class="text-xs text-slate-400 mb-3">Developer &amp; IoT Engineer</p>
+                            <p class="text-xs text-slate-400 mb-2"><i class="fas fa-envelope text-red-500 mr-2"></i>sadia@silentalert.io</p>
+                            <p class="text-xs text-slate-400 mb-2"><i class="fas fa-phone text-red-500 mr-2"></i>+880 1700-000000</p>
+                            <p class="text-xs text-slate-400"><i class="fas fa-map-marker-alt text-red-500 mr-2"></i>Bangladesh</p>
                         </div>
 
                     </div>
 
                     <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
-                        <p>&copy; 2026 SilentAlert Platform. Engineered with Arduino Nano & Node.js. All rights reserved.</p>
+                        <p>&copy; 2026 SilentAlert Platform. Built by <a href="https://www.linkedin.com/in/sadia-zaman-b5861b2ba" target="_blank" class="text-red-400 hover:text-red-300 transition">Sadia Zaman</a>. Engineered with Arduino Nano &amp; Node.js.</p>
                         <div class="flex gap-4">
                             <a href="#about" onclick="app.showPage('about')" class="hover:text-white transition">Privacy Policy</a>
-                            <span>•</span>
+                            <span>â€¢</span>
                             <a href="#about" onclick="app.showPage('about')" class="hover:text-white transition">Terms of Service</a>
                         </div>
                     </div>
@@ -1386,7 +1394,7 @@
                             <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-1">
                                 How noise levels above 50 dBA during recovery cause circadian rhythm disruptions and cardiovascular tachycardia.
                             </p>
-                            <span class="text-xs text-slate-400">Published: October 2026 • 6 min read</span>
+                            <span class="text-xs text-slate-400">Published: October 2026 â€¢ 6 min read</span>
                         </div>
                     </article>
 
@@ -1398,7 +1406,7 @@
                             <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-1">
                                 Overcoming ADC quantization noise and temperature drift in Arduino ATmega328P sound sensors.
                             </p>
-                            <span class="text-xs text-slate-400">Published: September 2026 • 8 min read</span>
+                            <span class="text-xs text-slate-400">Published: September 2026 â€¢ 8 min read</span>
                         </div>
                     </article>
 
@@ -1410,7 +1418,7 @@
                             <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-1">
                                 Analyzing the psychological impact of intermittent acoustic spikes versus continuous white noise baselines.
                             </p>
-                            <span class="text-xs text-slate-400">Published: August 2026 • 5 min read</span>
+                            <span class="text-xs text-slate-400">Published: August 2026 â€¢ 5 min read</span>
                         </div>
                     </article>
 
@@ -1436,7 +1444,7 @@
                 <!-- One-Click Demo Login Auto-fill Buttons (MANDATORY REQUIREMENT) -->
                 <div class="mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2.5">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block text-center">
-                        ⚡ Quick Demo Auto-Fill Logins:
+                        âš¡ Quick Demo Auto-Fill Logins:
                     </span>
                     <div class="grid grid-cols-2 gap-2">
                         <button type="button" id="demo-login-admin-btn" onclick="auth.handleDemoLogin('admin')" 
@@ -1481,7 +1489,7 @@
 
                     <div>
                         <label for="login-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
-                        <input type="password" id="login-password" placeholder="••••••••" required
+                        <input type="password" id="login-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required
                                class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
                     </div>
 
@@ -1542,13 +1550,13 @@
 
                     <div>
                         <label for="register-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Password (Min 6 chars)</label>
-                        <input type="password" id="register-password" placeholder="••••••••" required minlength="6"
+                        <input type="password" id="register-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required minlength="6"
                                class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
                     </div>
 
                     <div>
                         <label for="register-confirm-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Confirm Password</label>
-                        <input type="password" id="register-confirm-password" placeholder="••••••••" required minlength="6"
+                        <input type="password" id="register-confirm-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required minlength="6"
                                class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
                     </div>
 

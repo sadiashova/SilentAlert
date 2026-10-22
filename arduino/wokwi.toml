@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+firmware = 'build/silentalert_nano.ino.hex'
+elf     = 'build/silentalert_nano.ino.elf'
+
