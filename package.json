@@ -1,39 +1,39 @@
 {
-  "name": "silentalert-platform",
-  "version": "2.0.0",
-  "description": "Enterprise-grade IoT Acoustic Noise Monitoring & Alert System with Arduino Nano integration",
-  "main": "server/index.js",
-  "scripts": {
-    "start": "node server/index.js",
-    "seed": "node server/seed.js",
-    "simulate": "node arduino/noise-simulator.js",
-    "simulate:fast": "node arduino/noise-simulator.js --fast",
-    "bridge": "node arduino/serial-bridge.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "iot",
-    "acoustic",
-    "arduino-nano",
-    "noise-monitoring",
-    "decibel-meter",
-    "express",
-    "mongodb"
-  ],
-  "author": "SilentAlert Team",
-  "license": "MIT",
-  "dependencies": {
-    "@serialport/parser-readline": "^13.0.0",
-    "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
-    "dotenv": "^18.0.8",
-    "express": "^5.3.0",
-    "firebase": "^13.1.0",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.11.2",
-    "node-fetch": "^2.7.0",
-    "serialport": "^13.0.0"
-  }
+    "name":  "silentalert-platform",
+    "version":  "2.0.0",
+    "description":  "Enterprise-grade IoT Acoustic Noise Monitoring \u0026 Alert System with Arduino Nano integration",
+    "main":  "server/index.js",
+    "scripts":  {
+                    "start":  "node server/index.js",
+                    "seed":  "node server/seed.js",
+                    "simulate":  "node arduino/noise-simulator.js",
+                    "simulate:fast":  "node arduino/noise-simulator.js --fast",
+                    "bridge":  "node arduino/serial-bridge.js",
+                    "test":  "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+                },
+    "keywords":  [
+                     "iot",
+                     "acoustic",
+                     "arduino-nano",
+                     "noise-monitoring",
+                     "decibel-meter",
+                     "express",
+                     "mongodb"
+                 ],
+    "author":  "SilentAlert Team",
+    "license":  "MIT",
+    "dependencies":  {
+                         "bcryptjs":  "^3.0.3",
+                         "cors":  "^2.8.6",
+                         "dotenv":  "^18.0.8",
+                         "express":  "^5.3.0",
+                         "firebase":  "^13.1.0",
+                         "jsonwebtoken":  "^9.0.3",
+                         "mongoose":  "^9.11.2"
+                     },
+    "devDependencies":  {
+                            "serialport":  "^13.0.0",
+                            "@serialport/parser-readline":  "^13.0.0",
+                            "node-fetch":  "^2.7.0"
+                        }
 }
-
-

@@ -1,0 +1,9 @@
+# Arduino hardware files (not needed on Vercel)
+arduino/
+
+# Local dev files
+.env
+*.log
+
+# Git
+.git/
