@@ -72,7 +72,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Start server (bind to 0.0.0.0 for Local Area Network & Mobile testing)
-if (process.env.NODE_ENV !== 'test') {
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
     app.listen(PORT, '0.0.0.0', () => {
         console.log('=======================================================');
         console.log(`🚀 SilentAlert Engine Active on Port ${PORT}`);
