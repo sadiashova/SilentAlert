@@ -1,0 +1,1701 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SilentAlert - IoT Acoustic Monitoring & Intelligence Platform</title>
+    
+    <!-- Tailwind CSS with Dark Mode Class support -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',
+                        accent: '#ef4444',
+                        'accent-dark': '#dc2626',
+                        success: '#10b981',
+                        warning: '#f59e0b'
+                    },
+                    borderRadius: {
+                        'xl': '0.75rem',
+                        '2xl': '1rem',
+                        '3xl': '1.5rem'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome 6 Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- jsPDF & AutoTable for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- SilentAlert Custom Styles & Design System -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-red-500 selection:text-white">
+
+    <!-- GLOBAL NAVBAR -->
+    <header class="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="#home" onclick="app.showPage('home')" class="flex items-center gap-3 group focus:outline-none">
+                <div class="relative w-11 h-11">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-slate-900 via-red-800 to-red-500 flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12 Q5 6 8 12 Q11 18 14 12 Q17 6 20 12" />
+                            <circle cx="20" cy="12" r="2" fill="currentColor" stroke="none"/>
+                        </svg>
+                    </div>
+                    <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Silent<span class="text-red-600">Alert</span></span>
+                    <span class="text-[10px] block font-bold text-slate-400 tracking-widest uppercase">IoT Acoustic Grid</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links (Guest & Logged In) -->
+            <nav class="hidden md:flex items-center gap-7 text-sm font-semibold">
+                <a href="#home" onclick="app.showPage('home')" class="hover:text-red-600 dark:hover:text-red-400 transition">Home</a>
+                <a href="#explore" onclick="app.showPage('explore')" class="hover:text-red-600 dark:hover:text-red-400 transition">Explore Zones</a>
+                
+                <!-- Logged In Only Navigation (Min 6 routes logged in) -->
+                <a href="#dashboard" onclick="app.showPage('dashboard')" class="auth-only hidden hover:text-red-600 dark:hover:text-red-400 transition flex items-center gap-1.5">
+                    <i class="fas fa-chart-pie text-xs text-red-500"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#dashboard" onclick="app.showPage('dashboard'); app.showDashboardTab('heatmap')" class="auth-only hidden hover:text-red-600 dark:hover:text-red-400 transition">Heatmap</a>
+                <a href="#dashboard" onclick="app.showPage('dashboard'); app.showDashboardTab('reports')" class="auth-only hidden hover:text-red-600 dark:hover:text-red-400 transition">Analytics</a>
+
+                <!-- Public Navigation (Min 4 routes logged out) -->
+                <a href="#about" onclick="app.showPage('about')" class="hover:text-red-600 dark:hover:text-red-400 transition">About</a>
+                <a href="#blog" onclick="app.showPage('blog')" class="hover:text-red-600 dark:hover:text-red-400 transition">Knowledge Hub</a>
+                <a href="#contact" onclick="app.showPage('contact')" class="hover:text-red-600 dark:hover:text-red-400 transition">Contact</a>
+            </nav>
+
+            <!-- Actions: Theme Toggle, Auth Buttons, Profile Menu -->
+            <div class="flex items-center gap-3">
+                <!-- Dark / Light Mode Switcher -->
+                <button onclick="ui.toggleTheme()" 
+                        class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition" 
+                        title="Toggle Light / Dark Mode" aria-label="Toggle theme">
+                    <i class="theme-toggle-icon fas fa-moon text-sm"></i>
+                </button>
+
+                <!-- Guest Actions (Logged Out) -->
+                <div class="guest-only flex items-center gap-2">
+                    <button onclick="app.showPage('login')" class="px-4 py-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-red-600 transition">
+                        Log In
+                    </button>
+                    <button onclick="app.showPage('register')" class="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-bold shadow-md hover:bg-red-600 dark:hover:bg-red-600 dark:hover:text-white transition">
+                        Get Started
+                    </button>
+                </div>
+
+                <!-- Logged In Advanced Profile Dropdown Menu -->
+                <div class="auth-only hidden relative" id="profile-dropdown-container">
+                    <button onclick="document.getElementById('profile-dropdown-menu').classList.toggle('hidden')" 
+                            class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition focus:outline-none"
+                            id="profile-dropdown-btn">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" 
+                             alt="Avatar" 
+                             class="user-avatar-display w-9 h-9 rounded-xl object-cover border-2 border-red-500 shadow-sm">
+                        <div class="hidden lg:block text-left text-xs">
+                            <span class="user-name-display font-bold block text-slate-800 dark:text-white truncate max-w-[100px]">Admin</span>
+                            <span class="user-role-badge">ADMIN</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+                    </button>
+
+                    <!-- Advanced Dropdown Menu Popup -->
+                    <div id="profile-dropdown-menu" 
+                         class="hidden absolute right-0 mt-3 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-3 z-50 animate-fadeIn">
+                        <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+                            <p class="user-name-display text-sm font-bold text-slate-900 dark:text-white truncate">Administrator</p>
+                            <p class="user-email-display text-xs text-slate-500 truncate">admin@silentalert.io</p>
+                            <div class="mt-2 flex items-center justify-between">
+                                <span class="user-role-badge">ADMIN</span>
+                                <span class="text-[10px] font-semibold text-emerald-500"><i class="fas fa-circle text-[8px] mr-1"></i>Session Active</span>
+                            </div>
+                        </div>
+
+                        <div class="py-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                            <a href="#dashboard" onclick="app.showPage('dashboard'); document.getElementById('profile-dropdown-menu').classList.add('hidden')" 
+                               class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                                <i class="fas fa-chart-pie w-4 text-red-500"></i> Monitoring Dashboard
+                            </a>
+                            <a href="#dashboard" onclick="app.showPage('dashboard'); app.showDashboardTab('profile'); document.getElementById('profile-dropdown-menu').classList.add('hidden')" 
+                               class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                                <i class="fas fa-user-circle w-4 text-blue-500"></i> Profile Settings
+                            </a>
+                            <a href="#dashboard" onclick="app.showPage('dashboard'); app.showDashboardTab('heatmap'); document.getElementById('profile-dropdown-menu').classList.add('hidden')" 
+                               class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                                <i class="fas fa-map-marked-alt w-4 text-emerald-500"></i> Campus Heatmap
+                            </a>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-100 dark:border-slate-800 px-2">
+                            <button onclick="auth.logout(); document.getElementById('profile-dropdown-menu').classList.add('hidden')" 
+                                    class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition">
+                                <i class="fas fa-sign-out-alt"></i> Sign Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Hamburger Menu Button -->
+                <button onclick="document.getElementById('mobile-drawer').classList.toggle('hidden')" 
+                        class="md:hidden w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobile-drawer" class="hidden md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-6 space-y-4">
+            <div class="flex flex-col gap-3 font-semibold text-sm">
+                <a href="#home" onclick="app.showPage('home')" class="py-2 border-b border-slate-100 dark:border-slate-800">Home</a>
+                <a href="#explore" onclick="app.showPage('explore')" class="py-2 border-b border-slate-100 dark:border-slate-800">Explore Zones</a>
+                <a href="#dashboard" onclick="app.showPage('dashboard')" class="auth-only hidden py-2 border-b border-slate-100 dark:border-slate-800 text-red-600">Dashboard</a>
+                <a href="#about" onclick="app.showPage('about')" class="py-2 border-b border-slate-100 dark:border-slate-800">About Mission</a>
+                <a href="#blog" onclick="app.showPage('blog')" class="py-2 border-b border-slate-100 dark:border-slate-800">Knowledge Hub</a>
+                <a href="#contact" onclick="app.showPage('contact')" class="py-2">Contact Us</a>
+            </div>
+            <div class="guest-only pt-4 border-t border-slate-200 dark:border-slate-800 flex gap-3">
+                <button onclick="app.showPage('login')" class="flex-1 py-2.5 text-center font-bold text-sm bg-slate-100 dark:bg-slate-800 rounded-xl">Login</button>
+                <button onclick="app.showPage('register')" class="flex-1 py-2.5 text-center font-bold text-sm bg-red-600 text-white rounded-xl">Register</button>
+            </div>
+            <div class="auth-only hidden pt-4 border-t border-slate-200 dark:border-slate-800">
+                <button onclick="auth.logout()" class="w-full py-2.5 text-center font-bold text-sm bg-red-50 text-red-600 rounded-xl">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-1">
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 1: HOME / LANDING PAGE -->
+        <!-- ==================================================================== -->
+        <div id="view-home" class="app-page-view">
+            
+            <!-- SECTION 1: HERO SECTION (Limited to 60-70% Viewport, Clear CTA, Interactive Decibel Waveform) -->
+            <section class="relative min-h-[65vh] flex items-center justify-center bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 border-b border-slate-200 dark:border-slate-800 overflow-hidden px-4 sm:px-6 py-12">
+                <!-- Background decorative ambient circles -->
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+                    
+                    <!-- Left Hero Content -->
+                    <div class="lg:col-span-7 text-center lg:text-left space-y-5">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                            <span>Edge IoT Acoustic Intelligence</span>
+                        </div>
+
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tight">
+                            Autonomous Silence Enforcement with <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-rose-500">Smart IoT Nodes</span>
+                        </h1>
+
+                        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                            SilentAlert connects high-precision Arduino Nano acoustic telemetry nodes to detect noise violations in real-time across libraries, ICU hospital wards, and examination halls.
+                        </p>
+
+                        <!-- Call To Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                            <button onclick="app.showPage('explore')" 
+                                    class="px-7 py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm shadow-xl shadow-red-600/25 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <span>Explore Monitored Zones</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button onclick="app.showPage('dashboard')" 
+                                    class="px-7 py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-xl font-bold text-sm shadow-lg transition-all flex items-center gap-2">
+                                <i class="fas fa-chart-line text-red-400"></i>
+                                <span>Live Telemetry Grid</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Hero Interactive Element: Decibel Waveform & Audio SPL Simulator -->
+                    <div class="lg:col-span-5 w-full">
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">Arduino Edge Node: Active</span>
+                                </div>
+                                <span id="hero-db-status" class="text-xs">
+                                    <span class="text-emerald-500 font-bold"><i class="fas fa-check-circle"></i> QUIET COMPLIANT</span>
+                                </span>
+                            </div>
+
+                            <!-- Live Sound Waveform Visualizer -->
+                            <div class="h-28 bg-slate-950 rounded-2xl p-4 flex items-end justify-between gap-1 border border-slate-800 shadow-inner" id="hero-waveform-container">
+                                <!-- Populated dynamically by ui.initWaveformSimulator() -->
+                            </div>
+
+                            <!-- Decibel Gauge & Slider Interaction -->
+                            <div class="flex items-center justify-between pt-1">
+                                <div>
+                                    <span class="text-[11px] font-bold uppercase text-slate-400 block">Current SPL Sound Level</span>
+                                    <span id="hero-db-display" class="text-3xl font-black text-slate-900 dark:text-white">48 dB</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[11px] font-bold uppercase text-slate-400 block">Sensor Protocol</span>
+                                    <span class="text-xs font-mono font-bold text-red-500">MAX4466 / 115200 Baud</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5 pt-1">
+                                <div class="flex justify-between text-xs font-semibold text-slate-500">
+                                    <span>Simulate Room Noise:</span>
+                                    <span class="text-slate-400 text-[11px]">Slide to test threshold warnings</span>
+                                </div>
+                                <input type="range" id="sound-intensity-slider" min="30" max="95" value="48" 
+                                       class="w-full accent-red-600 h-2 bg-slate-200 dark:bg-slate-800 rounded-lg cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 2: DYNAMIC LIVE STATISTICS (REAL BACKEND DATA) -->
+            <section class="py-12 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        
+                        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 text-center">
+                            <span class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white" id="stat-total-zones">8</span>
+                            <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-1">Monitored Zones</span>
+                            <span class="text-[11px] text-emerald-500 font-semibold mt-1 block"><i class="fas fa-check"></i> 100% Online</span>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 text-center">
+                            <span class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white" id="stat-total-logs">1,420</span>
+                            <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-1">Telemetry Logs</span>
+                            <span class="text-[11px] text-blue-500 font-semibold mt-1 block"><i class="fas fa-database"></i> Continuous Feed</span>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 text-center">
+                            <span class="text-3xl sm:text-4xl font-black text-red-600" id="stat-active-alerts">0</span>
+                            <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-1">Active Violations</span>
+                            <span class="text-[11px] text-slate-400 font-semibold mt-1 block">Threshold &gt; 70 dB</span>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 text-center">
+                            <span class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white" id="stat-compliance-rate">98%</span>
+                            <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-1">Quiet Compliance</span>
+                            <span class="text-[11px] text-emerald-500 font-semibold mt-1 block">ISO 1996 Standards</span>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: KEY ARCHITECTURAL FEATURES -->
+            <section class="py-20 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center max-w-3xl mx-auto mb-16">
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Engineered for Reliability</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Why SilentAlert Sets the Standard</h2>
+                        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-3">Combining low-cost, high-reliability Arduino Nano microcontrollers with cloud analytics to deliver instant noise mitigation.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        
+                        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition group">
+                            <div class="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-600 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Edge Sensor Processing</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Arduino Nano reads 50ms analog sound waves with root-mean-square (RMS) calculation on-chip, mitigating cloud bandwidth and latency.
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition group">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Spatial Noise Heatmap</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Multi-zone floor plans render dynamic gradient heat signatures to instantly pinpoint escalating disturbances before they spread.
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition group">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Automated Audit Reports</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Generate one-click regulatory PDF compliance documentation conforming to hospital accreditation and academic silence rules.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: CORE LISTING / CARD SECTION (4 CARDS PER ROW, DESKTOP GRID, BACKEND DATA) -->
+            <section class="py-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                        <div>
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Live IoT Sensor Feeds</span>
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Active Monitored Acoustic Zones</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Real-time decibel readings sampled directly from Arduino hardware nodes.</p>
+                        </div>
+                        <button onclick="app.showPage('explore')" class="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                            <span>Browse All 8 Zones</span>
+                            <i class="fas fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+
+                    <!-- 4-Column Responsive Grid with Backend Data & Skeleton Loader -->
+                    <div id="featured-zones-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Rendered dynamically by app.loadFeaturedZones() -->
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 5: SECTOR DEPLOYMENTS & CATEGORIES -->
+            <section class="py-20 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center max-w-3xl mx-auto mb-16">
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Cross-Industry Deployment</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Built for Critical Quiet Environments</h2>
+                        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2">Acoustic compliance standards customized for high-sensitivity spaces.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-500 transition">
+                            <i class="fas fa-book-reader text-red-600 text-3xl mb-4"></i>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">University Libraries</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-3">Enforcing 45â€“55 dB quiet study zones to promote academic concentration during finals.</p>
+                            <span class="text-[11px] font-bold text-red-600">Max Limit: 55 dB &rarr;</span>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-500 transition">
+                            <i class="fas fa-heartbeat text-blue-600 text-3xl mb-4"></i>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">ICU & Hospital Wards</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-3">Preventing sleep disruption and cardiac stress in recovery pavilions as mandated by WHO.</p>
+                            <span class="text-[11px] font-bold text-blue-600">Max Limit: 50 dB &rarr;</span>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-500 transition">
+                            <i class="fas fa-graduation-cap text-emerald-600 text-3xl mb-4"></i>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Examination Halls</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-3">Standardized test venues requiring zero audio disruption with automated proctor alerts.</p>
+                            <span class="text-[11px] font-bold text-emerald-600">Max Limit: 52 dB &rarr;</span>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-500 transition">
+                            <i class="fas fa-robot text-purple-600 text-3xl mb-4"></i>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Robotics & Tech Labs</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-3">Isolating micro-vibrations and acoustic harmonics for precision laser and atomic force rigs.</p>
+                            <span class="text-[11px] font-bold text-purple-600">Max Limit: 65 dB &rarr;</span>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: IOT HARDWARE ARCHITECTURE (ARDUINO NANO INTEGRATION) -->
+            <section class="py-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        <div class="lg:col-span-6 space-y-6">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-widest block">Embedded Hardware Engineering</span>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+                                Powered by Arduino Nano & Precision Electret Transducers
+                            </h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Each SilentAlert node operates an onboard 16MHz ATmega328P or ARM Cortex-M4 microcontroller wired to a low-noise MAX4466 microphone with automatic gain control (AGC).
+                            </p>
+                            
+                            <div class="space-y-3 pt-2">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-6 h-6 rounded-lg bg-red-100 dark:bg-red-950 text-red-600 flex items-center justify-center text-xs shrink-0 mt-0.5">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <p class="text-xs text-slate-600 dark:text-slate-300">
+                                        <strong class="text-slate-900 dark:text-white">50ms Fast Window Sampling:</strong> Captures audio waveforms at 1000Hz to calculate real peak-to-peak amplitude (Vpp).
+                                    </p>
+                                </div>
+
+                                <div class="flex items-start gap-3">
+                                    <div class="w-6 h-6 rounded-lg bg-red-100 dark:bg-red-950 text-red-600 flex items-center justify-center text-xs shrink-0 mt-0.5">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <p class="text-xs text-slate-600 dark:text-slate-300">
+                                        <strong class="text-slate-900 dark:text-white">Local Visual Feedback:</strong> Tri-color LEDs on pins D9, D10, D13 indicate status right at the physical sensor node.
+                                    </p>
+                                </div>
+
+                                <div class="flex items-start gap-3">
+                                    <div class="w-6 h-6 rounded-lg bg-red-100 dark:bg-red-950 text-red-600 flex items-center justify-center text-xs shrink-0 mt-0.5">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <p class="text-xs text-slate-600 dark:text-slate-300">
+                                        <strong class="text-slate-900 dark:text-white">115200 Baud Serial Bridge:</strong> Emits clean JSON packets consumed by the Node.js serial relay bridge.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-6 bg-slate-950 rounded-3xl p-6 sm:p-8 text-white border border-slate-800 shadow-2xl">
+                            <div class="flex justify-between items-center pb-4 border-b border-slate-800 text-xs font-mono">
+                                <span class="text-red-400 font-bold"><i class="fas fa-code mr-1"></i>arduino_nano_silentalert.ino</span>
+                                <span class="text-slate-500">UART 115200 bps</span>
+                            </div>
+                            <pre class="mt-4 text-xs font-mono text-slate-300 overflow-x-auto leading-relaxed">
+<span class="text-purple-400">#define</span> MIC_PIN A0
+<span class="text-purple-400">#define</span> SAMPLE_WINDOW 50
+
+<span class="text-blue-400">void</span> <span class="text-amber-400">loop</span>() {
+  <span class="text-blue-400">unsigned long</span> start = millis();
+  <span class="text-blue-400">unsigned int</span> signalMax = 0, signalMin = 1024;
+  
+  <span class="text-emerald-400">// Collect 50ms peak-to-peak amplitude</span>
+  <span class="text-purple-400">while</span> (millis() - start &lt; SAMPLE_WINDOW) {
+    <span class="text-blue-400">int</span> val = analogRead(MIC_PIN);
+    <span class="text-purple-400">if</span> (val &gt; signalMax) signalMax = val;
+    <span class="text-purple-400">if</span> (val &lt; signalMin) signalMin = val;
+  }
+  <span class="text-blue-400">double</span> volts = ((signalMax - signalMin) * 5.0) / 1024.0;
+  <span class="text-blue-400">float</span> dBA = 38.0 + (log10(volts + 0.05) * 42.0);
+
+  <span class="text-emerald-400">// Transmit JSON telemetry to SilentAlert</span>
+  Serial.print(F(<span class="text-green-300">"{\"node\":\"ARDUINO-NANO-01\",\"Library\":"</span>));
+  Serial.print(dBA, 1);
+  Serial.println(F(<span class="text-green-300">"}"</span>));
+}
+                            </pre>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 7: WHO ACOUSTIC COMPLIANCE & STANDARDS -->
+            <section class="py-20 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center max-w-3xl mx-auto mb-16">
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Acoustic Science</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Decibel Reference Guide & Health Impact</h2>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">Sound pressure levels (SPL) calibrated against international occupational health standards.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border-l-4 border-emerald-500 shadow-sm">
+                            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider block mb-1">30 â€“ 50 dB (Optimal Quiet)</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Whisper & Library Ambience</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                Ideal for intellectual focus, meditation, and deep patient sleep. SilentAlert targets this nominal range across all study halls.
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border-l-4 border-amber-500 shadow-sm">
+                            <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block mb-1">60 â€“ 70 dB (Moderate Noise)</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Conversational & Office Chatter</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                Normal in common cafeterias, but causes reading fatigue and error spikes in exam halls and medical ICU pavilions.
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border-l-4 border-red-500 shadow-sm">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wider block mb-1">&gt; 70 dB (Critical Violation)</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Loud Disruption & Machinery</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                Triggers automatic SilentAlert sirens, proctor alerts, and logs a violation event in the database for administrative review.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: VERIFIED CASE STUDIES & TESTIMONIALS -->
+            <section class="py-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center max-w-3xl mx-auto mb-16">
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Trusted Deployments</span>
+                        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Field Testimonials & Institutional Impact</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Real acoustic managers achieving measurable peace of mind.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        
+                        <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <div class="flex text-amber-400 text-xs mb-4">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-xs text-slate-700 dark:text-slate-300 italic leading-relaxed mb-6">
+                                    "Deploying SilentAlert across our 4-story university library eliminated constant student noise complaints. The live heatmap lets staff intervene politely before volume spikes escalate."
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <span class="text-xs font-bold block text-slate-900 dark:text-white">Prof. Marcus Vance</span>
+                                    <span class="text-[11px] text-slate-500">Chief Librarian, North Academic Campus</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <div class="flex text-amber-400 text-xs mb-4">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-xs text-slate-700 dark:text-slate-300 italic leading-relaxed mb-6">
+                                    "In critical care recovery, excessive nocturnal noise causes acute delirium. SilentAlert's Arduino nodes gave our night nursing team an objective visual indicator to maintain restorative silence."
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <span class="text-xs font-bold block text-slate-900 dark:text-white">Dr. Sarah Lin</span>
+                                    <span class="text-[11px] text-slate-500">ICU Medical Director, Metropolitan Hospital</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <div class="flex text-amber-400 text-xs mb-4">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-xs text-slate-700 dark:text-slate-300 italic leading-relaxed mb-6">
+                                    "The automated PDF export feature is flawless. During our regional accreditation audit, we presented 6 months of continuous decibel compliance records with a single click."
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <span class="text-xs font-bold block text-slate-900 dark:text-white">Tariq Rahman</span>
+                                    <span class="text-[11px] text-slate-500">Facilities Engineering Lead, Tech Institute</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 9: INTERACTIVE TECHNICAL FAQ ACCORDION -->
+            <section class="py-20 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="text-center mb-14">
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Acoustic Engineering</span>
+                        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Detailed answers regarding sensors, thresholds, and installation.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+                            <h3 class="font-bold text-base text-slate-900 dark:text-white mb-2 flex items-center justify-between">
+                                <span>How does the Arduino Nano sample and calculate real decibel SPL?</span>
+                                <i class="fas fa-microchip text-red-500"></i>
+                            </h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                The MAX4466 sensor amplifies microphonic AC voltage output. The Arduino Nano reads analog pin A0 over a 50ms window, finds the peak-to-peak difference (Vpp), and applies a logarithmic transfer function <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">dBA = 38.0 + (log10(volts) * 42.0)</code> calibrated against a reference sound level meter.
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+                            <h3 class="font-bold text-base text-slate-900 dark:text-white mb-2 flex items-center justify-between">
+                                <span>Can I customize the decibel threshold for individual rooms?</span>
+                                <i class="fas fa-sliders-h text-red-500"></i>
+                            </h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Yes. Each monitored zone maintains an independent threshold limit in the MongoDB database (e.g., 50 dB for ICU recovery, 55 dB for study halls, 65 dB for robotics labs). If noise exceeds that room's specific limit, it flags an incident.
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+                            <h3 class="font-bold text-base text-slate-900 dark:text-white mb-2 flex items-center justify-between">
+                                <span>Does SilentAlert record human conversations or audio speech?</span>
+                                <i class="fas fa-shield-alt text-red-500"></i>
+                            </h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Absolutely not. SilentAlert enforces strict privacy by design. The Arduino microcontroller only computes mathematical Sound Pressure Level (SPL) numbers and discards raw audio instantaneously. No voice recording or eavesdropping is physically possible.
+                            </p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+                            <h3 class="font-bold text-base text-slate-900 dark:text-white mb-2 flex items-center justify-between">
+                                <span>How do I connect my physical Arduino Nano via USB?</span>
+                                <i class="fas fa-plug text-red-500"></i>
+                            </h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Flash the sketch in <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">hardware/arduino_nano_silentalert.ino</code> using Arduino IDE, then run <code class="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">node hardware/serial_telemetry_bridge.js COM3</code> on your terminal. The bridge instantly relays sensor packets to the web dashboard.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 10: INCIDENT ALERT NEWSLETTER SUBSCRIPTION -->
+            <section class="py-16 bg-slate-900 text-white">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+                    <span class="text-xs font-bold text-red-500 uppercase tracking-widest block">Automated Dispatch Notifications</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold">Subscribe for Facility Acoustic Incident Reports</h2>
+                    <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+                        Receive instant email and webhook notifications whenever persistent noise violations surpass designated decibel safety thresholds.
+                    </p>
+                    <form id="newsletter-form" class="max-w-md mx-auto flex gap-2 pt-2">
+                        <input type="email" id="newsletter-email" placeholder="facility.admin@institution.edu" required
+                               class="flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-red-500">
+                        <button type="submit" class="px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shrink-0">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SECTION 11: FOOTER (FULLY FUNCTIONAL LINKS, SOCIALS, COPYRIGHT) -->
+            <footer class="bg-slate-950 text-slate-400 py-16 border-t border-slate-900">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-2.5">
+                                <i class="fas fa-wave-square text-red-500 text-2xl"></i>
+                                <span class="text-xl font-black text-white">Silent<span class="text-red-500">Alert</span></span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                A real-time IoT acoustic monitoring platform built with Arduino Nano sensors. Detecting noise violations across libraries, classrooms, and labs.
+                            </p>
+                            <div class="flex gap-3 text-slate-300 flex-wrap">
+                                <a href="https://www.linkedin.com/in/sadia-zaman-b5861b2ba" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-blue-600 hover:text-white flex items-center justify-center transition" title="LinkedIn - Sadia Zaman"><i class="fab fa-linkedin-in text-xs"></i></a>
+                                <a href="https://www.facebook.com/sadia.zaman.7393264" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-blue-500 hover:text-white flex items-center justify-center transition" title="Facebook - Sadia Zaman"><i class="fab fa-facebook-f text-xs"></i></a>
+                                <a href="https://www.instagram.com/sadia._.zaman/" target="_blank" class="w-8 h-8 rounded-lg bg-slate-900 hover:bg-pink-600 hover:text-white flex items-center justify-center transition" title="Instagram - Sadia Zaman"><i class="fab fa-instagram text-xs"></i></a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Platform Navigation</h4>
+                            <ul class="text-xs space-y-2.5">
+                                <li><a href="#home" onclick="app.showPage('home')" class="hover:text-white transition">Home Overview</a></li>
+                                <li><a href="#explore" onclick="app.showPage('explore')" class="hover:text-white transition">Monitored Zones</a></li>
+                                <li><a href="#dashboard" onclick="app.showPage('dashboard')" class="hover:text-white transition">Acoustic Dashboard</a></li>
+                                <li><a href="#about" onclick="app.showPage('about')" class="hover:text-white transition">Hardware Architecture</a></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Resources & Docs</h4>
+                            <ul class="text-xs space-y-2.5">
+                                <li><a href="#blog" onclick="app.showPage('blog')" class="hover:text-white transition">Acoustic Hygiene Guide</a></li>
+                                <li><a href="#about" onclick="app.showPage('about')" class="hover:text-white transition">Arduino Nano Firmware</a></li>
+                                <li><a href="#about" onclick="app.showPage('about')" class="hover:text-white transition">ISO 1996 dB Standards</a></li>
+                                <li><a href="#contact" onclick="app.showPage('contact')" class="hover:text-white transition">System Support Desk</a></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Creator</h4>
+                            <p class="text-sm font-bold text-white mb-1">Sadia Zaman</p>
+                            <p class="text-xs text-slate-400 mb-3">Developer &amp; IoT Engineer</p>
+                            <p class="text-xs text-slate-400 mb-2"><i class="fas fa-envelope text-red-500 mr-2"></i>sadia@silentalert.io</p>
+                            <p class="text-xs text-slate-400 mb-2"><i class="fas fa-phone text-red-500 mr-2"></i>+880 1700-000000</p>
+                            <p class="text-xs text-slate-400"><i class="fas fa-map-marker-alt text-red-500 mr-2"></i>Bangladesh</p>
+                        </div>
+
+                    </div>
+
+                    <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+                        <p>&copy; 2026 SilentAlert Platform. Built by <a href="https://www.linkedin.com/in/sadia-zaman-b5861b2ba" target="_blank" class="text-red-400 hover:text-red-300 transition">Sadia Zaman</a>. Engineered with Arduino Nano &amp; Node.js.</p>
+                        <div class="flex gap-4">
+                            <a href="#about" onclick="app.showPage('about')" class="hover:text-white transition">Privacy Policy</a>
+                            <span>â€¢</span>
+                            <a href="#about" onclick="app.showPage('about')" class="hover:text-white transition">Terms of Service</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 2: EXPLORE / LISTING PAGE (SEARCH, FILTERS, SORT, PAGINATION) -->
+        <!-- ==================================================================== -->
+        <div id="view-explore" class="app-page-view hidden py-10 bg-slate-50 dark:bg-slate-950 min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                
+                <!-- Page Header -->
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-1">Acoustic Directory</span>
+                        <h1 class="text-3xl font-black text-slate-900 dark:text-white">Explore Monitored Acoustic Zones</h1>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Filter, sort, and inspect real-time sound levels across campuses and hospital wings.</p>
+                    </div>
+                    <button onclick="app.openZoneDetails(app.exploreState.firstZoneId || '')" class="auth-only hidden px-4 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 transition" id="btn-quick-inspect">
+                        <i class="fas fa-chart-line mr-1"></i> Quick Telemetry
+                    </button>
+                </div>
+
+                <!-- Search & Filtering Control Bar (Forms Standard) -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        
+                        <!-- Search Bar -->
+                        <div class="md:col-span-2">
+                            <label for="explore-search-input" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                Search by Zone Name or Floor
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                                <input type="text" id="explore-search-input" placeholder="e.g. Library, ICU, Boardroom, Lab..."
+                                       class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-red-500 transition">
+                            </div>
+                        </div>
+
+                        <!-- Filter 1: Category -->
+                        <div>
+                            <label for="explore-category-filter" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                Facility Sector
+                            </label>
+                            <select id="explore-category-filter" 
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-red-500 transition">
+                                <option value="All">All Sectors</option>
+                                <option value="Library">Library</option>
+                                <option value="Hospital">Hospital / ICU</option>
+                                <option value="Classroom">Classroom / Exam</option>
+                                <option value="Lab">Research Lab</option>
+                                <option value="Conference">Conference Suite</option>
+                                <option value="Office">Audio Studio / Office</option>
+                            </select>
+                        </div>
+
+                        <!-- Filter 2: Noise Level Status -->
+                        <div>
+                            <label for="explore-status-filter" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                Noise Level Status
+                            </label>
+                            <select id="explore-status-filter" 
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-red-500 transition">
+                                <option value="All">All Noise Levels</option>
+                                <option value="normal">Normal (&lt;60 dB)</option>
+                                <option value="warning">Warning (60-70 dB)</option>
+                                <option value="critical">Critical Alert (&gt;70 dB)</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- Sorting Options -->
+                    <div class="flex flex-wrap items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-xs gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-400 font-medium">Sort Order:</span>
+                            <select id="explore-sort-select" class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold focus:outline-none">
+                                <option value="name-asc">Name (A &rarr; Z)</option>
+                                <option value="name-desc">Name (Z &rarr; A)</option>
+                                <option value="noise-high">Noise Level (Highest First)</option>
+                                <option value="noise-low">Noise Level (Lowest First)</option>
+                                <option value="threshold-high">Threshold (High &rarr; Low)</option>
+                                <option value="threshold-low">Threshold (Low &rarr; High)</option>
+                            </select>
+                        </div>
+                        <button onclick="app.resetExploreFilters()" class="text-red-600 hover:text-red-700 font-semibold flex items-center gap-1">
+                            <i class="fas fa-undo text-[10px]"></i> Reset Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4 Cards per Row Grid -->
+                <div id="explore-zones-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Populated dynamically by app.loadExploreZones() -->
+                </div>
+
+                <!-- Pagination Container -->
+                <div id="explore-pagination-container">
+                    <!-- Populated dynamically -->
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 3: ROLE-BASED DASHBOARD (USER & ADMIN VIEWS) -->
+        <!-- ==================================================================== -->
+        <div id="view-dashboard" class="app-page-view hidden min-h-screen bg-slate-100 dark:bg-slate-950 flex flex-col md:flex-row">
+            
+            <!-- Dashboard Sidebar (Responsive) -->
+            <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
+                <!-- User Profile Summary in Sidebar -->
+                <div class="p-6 border-b border-slate-800 bg-slate-950/60">
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" 
+                             alt="Avatar" 
+                             class="user-avatar-display w-11 h-11 rounded-xl object-cover border-2 border-red-500 shadow-md">
+                        <div class="overflow-hidden">
+                            <h4 class="user-name-display text-sm font-bold text-white truncate">Administrator</h4>
+                            <span class="user-role-badge">ADMIN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu Items -->
+                <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+                    <!-- Universal Items -->
+                    <button onclick="app.showDashboardTab('overview')" data-tab="overview" 
+                            class="dash-sidebar-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left">
+                        <i class="fas fa-chart-pie w-4 text-center"></i> Overview
+                    </button>
+
+                    <button onclick="app.showDashboardTab('heatmap')" data-tab="heatmap" 
+                            class="dash-sidebar-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left">
+                        <i class="fas fa-map-marked-alt w-4 text-center"></i> Campus Heatmap
+                    </button>
+
+                    <button onclick="app.showDashboardTab('reports')" data-tab="reports" 
+                            class="dash-sidebar-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left">
+                        <i class="fas fa-file-invoice w-4 text-center"></i> Acoustic Reports & PDF
+                    </button>
+
+                    <!-- Admin Only Items (Min 6 items for Admin) -->
+                    <div class="admin-only hidden pt-3 border-t border-slate-800 mt-2 space-y-1.5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3.5 block">Admin Control</span>
+                        
+                        <button onclick="app.showDashboardTab('zones')" data-tab="zones" 
+                                class="dash-sidebar-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left">
+                            <i class="fas fa-sliders-h w-4 text-center"></i> Manage Zones & Nodes
+                        </button>
+
+                        <button onclick="app.showDashboardTab('users')" data-tab="users" 
+                                class="dash-sidebar-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left">
+                            <i class="fas fa-users-cog w-4 text-center"></i> Manage Users
+                        </button>
+                    </div>
+
+                    <!-- Profile & Settings Items -->
+                    <div class="pt-3 border-t border-slate-800 mt-2 space-y-1.5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3.5 block">Personal</span>
+
+                        <button onclick="app.showDashboardTab('profile')" data-tab="profile" 
+                                class="dash-sidebar-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left">
+                            <i class="fas fa-user-circle w-4 text-center"></i> Profile Settings
+                        </button>
+
+                        <button onclick="app.showDashboardTab('settings')" data-tab="settings" 
+                                class="dash-sidebar-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-left">
+                            <i class="fas fa-cog w-4 text-center"></i> Node Config
+                        </button>
+                    </div>
+                </nav>
+
+                <!-- Sidebar Footer -->
+                <div class="p-4 border-t border-slate-800 bg-slate-950/40">
+                    <button onclick="auth.logout()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-red-400 hover:text-white transition">
+                        <i class="fas fa-sign-out-alt"></i> Sign Out
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Dashboard Content Canvas -->
+            <main class="flex-1 p-6 md:p-8 overflow-y-auto">
+                
+                <!-- Critical Priority Alert Notification Banner -->
+                <div id="priority-alert-box" class="hidden mb-6 bg-red-600 text-white p-5 rounded-2xl shadow-xl flex items-center justify-between animate-bounce">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-xl shrink-0">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base">CRITICAL NOISE VIOLATION DETECTED!</h3>
+                            <p class="text-xs text-red-100">Threshold exceeded in <span id="alert-room-name" class="font-bold underline">--</span> (<span id="alert-db-val">0</span> dB SPL). Immediate intervention required.</p>
+                        </div>
+                    </div>
+                    <button onclick="app.showDashboardTab('heatmap')" class="px-4 py-2 bg-white text-red-600 rounded-xl text-xs font-black shadow hover:bg-slate-100 transition">
+                        View On Map
+                    </button>
+                </div>
+
+                <!-- SUB-TAB 1: OVERVIEW & CHARTS -->
+                <div id="dash-tab-overview" class="dashboard-tab-content space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">Acoustic Overview</h2>
+                            <p class="text-xs text-slate-500">Real-time decibel telemetries and historical trend analysis.</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 dark:border-emerald-800">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Telemetry Stream Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Overview Zone Cards -->
+                    <div id="dash-live-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Populated dynamically by app.loadDashboardZoneCards() -->
+                    </div>
+
+                    <!-- Real Dynamic Charts Grid (Chart.js) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- 1. Bar Chart: Average Decibels by Monitored Zone (7 Cols) -->
+                        <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-800 dark:text-white">Average Decibels by Monitored Zone</h3>
+                                    <p class="text-[11px] text-slate-400">Current SPL vs Permissible Room Threshold</p>
+                                </div>
+                                <span class="text-xs text-slate-400 font-mono"><i class="fas fa-chart-bar text-red-500 mr-1"></i>Bar SPL</span>
+                            </div>
+                            <div class="h-64 w-full">
+                                <canvas id="chart-bar-zones"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 3. Doughnut / Pie Chart: Status Distribution (5 Cols) -->
+                        <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-800 dark:text-white">Zone Compliance Distribution</h3>
+                                    <p class="text-[11px] text-slate-400">Normal vs Warning vs Critical</p>
+                                </div>
+                                <span class="text-xs text-slate-400 font-mono"><i class="fas fa-chart-pie text-blue-500 mr-1"></i>Pie Ratio</span>
+                            </div>
+                            <div class="h-64 w-full flex items-center justify-center">
+                                <canvas id="chart-pie-status"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 2. Line Chart: Real-time Telemetry Trend Over Time (12 Cols) -->
+                        <div class="col-span-full bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-800 dark:text-white">24-Hour Continuous Acoustic Telemetry Stream</h3>
+                                    <p class="text-[11px] text-slate-400">Multi-channel decibel signals sampled from Arduino edge gateways</p>
+                                </div>
+                                <span class="text-xs text-slate-400 font-mono"><i class="fas fa-chart-line text-emerald-500 mr-1"></i>Live Stream</span>
+                            </div>
+                            <div class="h-72 w-full">
+                                <canvas id="chart-line-telemetry"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 2: SPATIAL CAMPUS HEATMAP -->
+                <div id="dash-tab-heatmap" class="dashboard-tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">Spatial Acoustic Heatmap</h2>
+                            <p class="text-xs text-slate-500">Live noise intensity projected over campus floor plan.</p>
+                        </div>
+                        <div class="flex gap-4 text-xs font-bold bg-white dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm">
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm"></span> Normal (&lt;60dB)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 shadow-sm"></span> Warning (60-70dB)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-600 shadow-sm animate-ping"></span> Critical (&gt;70dB)</span>
+                        </div>
+                    </div>
+
+                    <!-- Floor Plan Canvas Container with map.png -->
+                    <div class="relative w-full h-[580px] bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden group"
+                         style="background-image: url('map.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+                        <div class="absolute inset-0 bg-slate-950/20"></div>
+                        <div id="heatmap-overlay" class="absolute inset-0 z-0"></div>
+                        <div id="heatmap-labels" class="absolute inset-0 z-10 pointer-events-none"></div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 3: MANAGE ZONES (ADMIN CRUD) -->
+                <div id="dash-tab-zones" class="dashboard-tab-content hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">Manage Monitored Zones</h2>
+                            <p class="text-xs text-slate-500">Configure acoustic threshold parameters and sensor nodes.</p>
+                        </div>
+                        <button onclick="app.openCreateZoneModal()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg">
+                            <i class="fas fa-plus"></i>
+                            <span>Register New Zone</span>
+                        </button>
+                    </div>
+
+                    <!-- Data Table (with Pagination, Sorting, Actions) -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100 dark:border-slate-800">
+                                    <tr>
+                                        <th class="p-4">Zone & Category</th>
+                                        <th class="p-4">Physical Location</th>
+                                        <th class="p-4">Limit (dB)</th>
+                                        <th class="p-4">Current SPL</th>
+                                        <th class="p-4">Acoustic Status</th>
+                                        <th class="p-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-zones-table-body" class="text-xs divide-y divide-slate-100 dark:divide-slate-800">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 4: REPORTS & PDF EXPORT -->
+                <div id="dash-tab-reports" class="dashboard-tab-content hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">Acoustic Incident Reports</h2>
+                            <p class="text-xs text-slate-500">Historical telemetry log audit trail for regulatory compliance.</p>
+                        </div>
+                        <button onclick="app.exportReportsPDF()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Export PDF Audit</span>
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto max-h-[550px]">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100 dark:border-slate-800 sticky top-0 z-10 backdrop-blur-md">
+                                    <tr>
+                                        <th class="p-3.5">Timestamp</th>
+                                        <th class="p-3.5">Library</th>
+                                        <th class="p-3.5">Classroom</th>
+                                        <th class="p-3.5">Nanotech Lab</th>
+                                        <th class="p-3.5">Boardroom</th>
+                                        <th class="p-3.5">Average SPL</th>
+                                        <th class="p-3.5">Compliance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-reports-table-body" class="text-xs divide-y divide-slate-100 dark:divide-slate-800">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 5: MANAGE USERS (ADMIN ONLY) -->
+                <div id="dash-tab-users" class="dashboard-tab-content hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">System User Management</h2>
+                            <p class="text-xs text-slate-500">Assign role permissions and monitor authenticated administrators.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100 dark:border-slate-800">
+                                    <tr>
+                                        <th class="p-4">User Details</th>
+                                        <th class="p-4">Organization</th>
+                                        <th class="p-4">Access Role</th>
+                                        <th class="p-4">Registered Date</th>
+                                        <th class="p-4 text-right">Role Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-users-table-body" class="text-xs divide-y divide-slate-100 dark:divide-slate-800">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 6: PROFILE UPDATE & PASSWORD CHANGE (FORMS STANDARD) -->
+                <div id="dash-tab-profile" class="dashboard-tab-content hidden space-y-8 max-w-4xl">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white">Account Profile & Security</h2>
+                        <p class="text-xs text-slate-500">Update specialist credentials and manage secure session authentication.</p>
+                    </div>
+
+                    <!-- Profile Update Form -->
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            Personal Details
+                        </h3>
+                        <form id="profile-form" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="profile-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
+                                    <input type="text" id="profile-name" required
+                                           class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                                </div>
+                                <div>
+                                    <label for="profile-phone" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Direct Phone</label>
+                                    <input type="text" id="profile-phone"
+                                           class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="profile-org" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Organization / Facility</label>
+                                <input type="text" id="profile-org"
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            </div>
+
+                            <div>
+                                <label for="profile-bio" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Professional Bio</label>
+                                <textarea id="profile-bio" rows="3"
+                                          class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500"></textarea>
+                            </div>
+
+                            <button type="submit" id="profile-submit-btn" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition">
+                                Save Profile Changes
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Password Update Form -->
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            Change Password
+                        </h3>
+                        <form id="password-form" class="space-y-4 max-w-md">
+                            <div>
+                                <label for="current-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Current Password</label>
+                                <input type="password" id="current-password" required
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            </div>
+                            <div>
+                                <label for="new-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">New Password (Min 6 chars)</label>
+                                <input type="password" id="new-password" required minlength="6"
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            </div>
+                            <div>
+                                <label for="confirm-new-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Confirm New Password</label>
+                                <input type="password" id="confirm-new-password" required minlength="6"
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            </div>
+
+                            <button type="submit" id="password-submit-btn" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition">
+                                Update Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 7: NODE CONFIGURATION -->
+                <div id="dash-tab-settings" class="dashboard-tab-content hidden space-y-6 max-w-3xl">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white">Hardware Node Configuration</h2>
+                        <p class="text-xs text-slate-500">Global ADC sensitivity parameters and MQTT/Serial gateways.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
+                        <div class="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-800">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 dark:text-white">Continuous Background Simulation</h4>
+                                <p class="text-[11px] text-slate-400">Maintains realistic ambient acoustic oscillation if hardware is disconnected.</p>
+                            </div>
+                            <input type="checkbox" checked class="accent-red-600 w-4 h-4 cursor-pointer">
+                        </div>
+
+                        <div class="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-800">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 dark:text-white">Onboard Siren Strobe Trigger</h4>
+                                <p class="text-[11px] text-slate-400">Flashes Arduino pin D13 and triggers physical buzzer on violation &gt; 70dB.</p>
+                            </div>
+                            <input type="checkbox" checked class="accent-red-600 w-4 h-4 cursor-pointer">
+                        </div>
+
+                        <div class="flex justify-between items-center py-3">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 dark:text-white">Telemetry Packet Window</h4>
+                                <p class="text-[11px] text-slate-400">Current sample integration rate: 50 ms (20 Hz capture).</p>
+                            </div>
+                            <span class="text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg">50 ms</span>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 4: ABOUT PAGE -->
+        <!-- ==================================================================== -->
+        <div id="view-about" class="app-page-view hidden py-16 bg-slate-50 dark:bg-slate-950 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                
+                <div class="text-center space-y-4">
+                    <span class="text-xs font-bold text-red-600 uppercase tracking-widest block">The SilentAlert Mission</span>
+                    <h1 class="text-4xl font-black text-slate-900 dark:text-white">Engineering Quiet Spaces for High-Focus Humans</h1>
+                    <p class="text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
+                        Acoustic pollution is an invisible threat to cognition and medical recovery. SilentAlert was developed as an edge-computing solution that safeguards acoustic integrity.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-600 flex items-center justify-center text-xl mb-4">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Our Objective</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                            Provide academic institutions, hospitals, and technical laboratories with turnkey, low-cost IoT nodes that automate silence compliance without invasive speech recording or costly acoustic consultancies.
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center text-xl mb-4">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">The Arduino Architecture</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                            By leveraging Arduino Nano microcontrollers running edge peak-to-peak amplitude analysis, we eliminate analog noise transmission line degradation and deliver calibrated decibel streams at millisecond resolution.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 5: CONTACT PAGE (WORKING FORM, DB STORAGE, VALIDATION) -->
+        <!-- ==================================================================== -->
+        <div id="view-contact" class="app-page-view hidden py-16 bg-slate-50 dark:bg-slate-950 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                
+                <div class="text-center space-y-3">
+                    <span class="text-xs font-bold text-red-600 uppercase tracking-widest block">Get In Touch</span>
+                    <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">Contact the Acoustic Engineering Team</h1>
+                    <p class="text-sm text-slate-500 max-w-xl mx-auto">
+                        Have inquiries regarding campus hardware deployment, sensor calibration, or custom acoustic thresholds? Submit your request below.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-xl">
+                    
+                    <div class="md:col-span-5 space-y-6 md:border-r border-slate-100 dark:border-slate-800 md:pr-8">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Campus Dispatch Hub</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed">
+                                Our technical specialists assist with wiring diagrams, firmware flashing, and multi-node spatial calibration.
+                            </p>
+                        </div>
+
+                        <div class="space-y-4 text-xs text-slate-600 dark:text-slate-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <span>dispatch@silentalert.io</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <span>+1 (555) 789-0123</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-500 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <span>Mon - Fri: 8:00 AM - 6:00 PM EST</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form (Stores in MongoDB /api/contact) -->
+                    <div class="md:col-span-7">
+                        <form id="contact-form" class="space-y-4">
+                            <div>
+                                <label for="contact-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Your Full Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="contact-name" placeholder="Dr. Jane Doe" required
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            </div>
+
+                            <div>
+                                <label for="contact-email" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Official Email Address <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" id="contact-email" placeholder="jane.doe@institution.edu" required
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            </div>
+
+                            <div>
+                                <label for="contact-subject" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Inquiry Subject <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="contact-subject" placeholder="Acoustic Installation in ICU Ward" required
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            </div>
+
+                            <div>
+                                <label for="contact-message" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Message Content <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="contact-message" rows="4" placeholder="Detail your facility acoustic requirements or sensor questions..." required minlength="10"
+                                          class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500"></textarea>
+                            </div>
+
+                            <button type="submit" id="contact-submit-btn" class="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-red-600 dark:hover:bg-red-600 dark:hover:text-white rounded-xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                                <i class="fas fa-paper-plane"></i>
+                                <span>Transmit Inquiry</span>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 6: KNOWLEDGE BASE / BLOG PAGE -->
+        <!-- ==================================================================== -->
+        <div id="view-blog" class="app-page-view hidden py-16 bg-slate-50 dark:bg-slate-950 min-h-screen">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                
+                <div class="text-center space-y-3">
+                    <span class="text-xs font-bold text-red-600 uppercase tracking-widest block">Acoustic Engineering Insights</span>
+                    <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">Knowledge Hub & Research Articles</h1>
+                    <p class="text-sm text-slate-500 max-w-xl mx-auto">
+                        In-depth publications on decibel measurement standards, sensor calibration, and acoustic psychology.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <article class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&q=80" class="h-44 w-full object-cover">
+                        <div class="p-6 flex-1 flex flex-col">
+                            <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider mb-2">Hospital Standards</span>
+                            <h3 class="font-bold text-base text-slate-900 dark:text-white mb-2">WHO Guidelines on Ambient Noise in Critical Care Pavilions</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-1">
+                                How noise levels above 50 dBA during recovery cause circadian rhythm disruptions and cardiovascular tachycardia.
+                            </p>
+                            <span class="text-xs text-slate-400">Published: October 2026 â€¢ 6 min read</span>
+                        </div>
+                    </article>
+
+                    <article class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" class="h-44 w-full object-cover">
+                        <div class="p-6 flex-1 flex flex-col">
+                            <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2">Hardware Calibration</span>
+                            <h3 class="font-bold text-base text-slate-900 dark:text-white mb-2">Calibrating MAX4466 Electret Microphones on 5V ADC</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-1">
+                                Overcoming ADC quantization noise and temperature drift in Arduino ATmega328P sound sensors.
+                            </p>
+                            <span class="text-xs text-slate-400">Published: September 2026 â€¢ 8 min read</span>
+                        </div>
+                    </article>
+
+                    <article class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+                        <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=600&q=80" class="h-44 w-full object-cover">
+                        <div class="p-6 flex-1 flex flex-col">
+                            <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">Academic Research</span>
+                            <h3 class="font-bold text-base text-slate-900 dark:text-white mb-2">Cognitive Retention & Reverberation Time in Modern Libraries</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 flex-1">
+                                Analyzing the psychological impact of intermittent acoustic spikes versus continuous white noise baselines.
+                            </p>
+                            <span class="text-xs text-slate-400">Published: August 2026 â€¢ 5 min read</span>
+                        </div>
+                    </article>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 7: AUTH LOGIN VIEW (WITH DEMO AUTO-FILL CREDENTIALS) -->
+        <!-- ==================================================================== -->
+        <div id="view-login" class="app-page-view hidden py-16 bg-slate-50 dark:bg-slate-950 min-h-screen flex items-center justify-center px-4">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full relative">
+                
+                <div class="text-center mb-8">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-slate-900 to-red-600 text-white flex items-center justify-center text-xl mx-auto mb-3 shadow-lg">
+                        <i class="fas fa-wave-square animate-pulse"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-900 dark:text-white">Sign In to SilentAlert</h2>
+                    <p class="text-xs text-slate-500 mt-1">Authenticate to access the live acoustic control grid.</p>
+                </div>
+
+                <!-- One-Click Demo Login Auto-fill Buttons (MANDATORY REQUIREMENT) -->
+                <div class="mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2.5">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block text-center">
+                        âš¡ Quick Demo Auto-Fill Logins:
+                    </span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="demo-login-admin-btn" onclick="auth.handleDemoLogin('admin')" 
+                                class="w-full py-2 px-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <i class="fas fa-user-shield"></i> Demo Admin
+                        </button>
+                        <button type="button" id="demo-login-user-btn" onclick="auth.handleDemoLogin('user')" 
+                                class="w-full py-2 px-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <i class="fas fa-user"></i> Demo User
+                        </button>
+                    </div>
+                    <div class="text-[10px] text-center text-slate-400">
+                        Admin: admin@silentalert.io (Admin@1234) | User: user@silentalert.io (User@1234)
+                    </div>
+                </div>
+
+                <!-- Google Sign In via Firebase (Project: silentalert-6a832) -->
+                <button type="button" id="google-signin-btn" onclick="firebaseAuth.signInWithGoogle()" 
+                        class="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/60 font-bold text-xs flex items-center justify-center gap-3 transition shadow-sm mb-4">
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                </button>
+
+                <div class="relative flex items-center justify-center my-4">
+                    <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
+                    <span class="bg-white dark:bg-slate-900 px-3 text-[11px] uppercase font-bold text-slate-400 shrink-0">or with email credentials</span>
+                    <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="login-email" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+                        <input type="email" id="login-email" placeholder="admin@silentalert.io" required
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <div>
+                        <label for="login-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
+                        <input type="password" id="login-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <button type="submit" id="login-submit-btn" 
+                            class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-red-600/25">
+                        Log In to Acoustic Grid
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center text-xs text-slate-500">
+                    Don't have an acoustic access account? 
+                    <a href="#register" onclick="app.showPage('register')" class="text-red-600 font-bold hover:underline">Create Account</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- VIEW 8: AUTH REGISTER VIEW -->
+        <!-- ==================================================================== -->
+        <div id="view-register" class="app-page-view hidden py-16 bg-slate-50 dark:bg-slate-950 min-h-screen flex items-center justify-center px-4">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full relative">
+                
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-black text-slate-900 dark:text-white">Create Specialist Account</h2>
+                    <p class="text-xs text-slate-500 mt-1">Join the campus acoustic intelligence network.</p>
+                </div>
+
+                <!-- Google Sign Up via Firebase (Project: silentalert-6a832) -->
+                <button type="button" id="google-signup-btn" onclick="firebaseAuth.signInWithGoogle()" 
+                        class="w-full py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700/60 font-bold text-xs flex items-center justify-center gap-3 transition shadow-sm mb-4">
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span>Sign up with Google</span>
+                </button>
+
+                <div class="relative flex items-center justify-center my-4">
+                    <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
+                    <span class="bg-white dark:bg-slate-900 px-3 text-[11px] uppercase font-bold text-slate-400 shrink-0">or register with email</span>
+                    <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
+                </div>
+
+                <form id="register-form" class="space-y-4">
+                    <div>
+                        <label for="register-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
+                        <input type="text" id="register-name" placeholder="Dr. Alexander Wright" required
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <div>
+                        <label for="register-email" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+                        <input type="email" id="register-email" placeholder="alex.wright@campus.edu" required
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <div>
+                        <label for="register-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Password (Min 6 chars)</label>
+                        <input type="password" id="register-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required minlength="6"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <div>
+                        <label for="register-confirm-password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required minlength="6"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <div>
+                        <label for="register-role" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Requested Role</label>
+                        <select id="register-role" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            <option value="user">Facility Specialist (Standard User)</option>
+                            <option value="admin">Acoustic Administrator (Full Admin Privileges)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="register-submit-btn" 
+                            class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition shadow-lg">
+                        Complete Registration
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center text-xs text-slate-500">
+                    Already registered? 
+                    <a href="#login" onclick="app.showPage('login')" class="text-red-600 font-bold hover:underline">Sign In</a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==================================================================== -->
+    <!-- MODAL 1: ZONE SPECIFICATIONS & MEDIA GALLERY (PUBLIC DETAILS PAGE) -->
+    <!-- ==================================================================== -->
+    <div id="modal-zone-details" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative">
+            
+            <button onclick="ui.closeModal('modal-zone-details')" 
+                    class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 transition flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div id="modal-zone-details-content">
+                <!-- Dynamically populated by app.openZoneDetails(id) -->
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- MODAL 2: CREATE / EDIT MONITORED ZONE (ADMIN CRUD) -->
+    <!-- ==================================================================== -->
+    <div id="modal-zone-form" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+            
+            <button onclick="ui.closeModal('modal-zone-form')" 
+                    class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 transition flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h3 id="zone-modal-title" class="text-xl font-black text-slate-900 dark:text-white mb-6">
+                Register New Monitored Zone
+            </h3>
+
+            <form id="zone-form" class="space-y-4">
+                <input type="hidden" id="zone-id-input">
+
+                <div>
+                    <label for="form-zone-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Zone Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="form-zone-name" placeholder="e.g. West Campus Quiet Pavilion" required
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="form-zone-category" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Sector Category</label>
+                        <select id="form-zone-category" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                            <option value="Library">Library</option>
+                            <option value="Hospital">Hospital / ICU</option>
+                            <option value="Classroom">Classroom</option>
+                            <option value="Lab">Research Lab</option>
+                            <option value="Conference">Conference Room</option>
+                            <option value="Office">Office / Studio</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="form-zone-threshold" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Max Threshold (dB) <span class="text-red-500">*</span></label>
+                        <input type="number" id="form-zone-threshold" value="55" min="30" max="120" required
+                               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="form-zone-location" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Physical Location <span class="text-red-500">*</span></label>
+                        <input type="text" id="form-zone-location" placeholder="Floor 3 - Wing B" required
+                               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <div>
+                        <label for="form-zone-capacity" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Room Capacity (Persons)</label>
+                        <input type="number" id="form-zone-capacity" value="40" min="1" max="1000"
+                               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="form-zone-image" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Cover Image URL</label>
+                    <input type="url" id="form-zone-image" placeholder="https://images.unsplash.com/..." 
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500">
+                </div>
+
+                <div>
+                    <label for="form-zone-desc" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Acoustic Description</label>
+                    <textarea id="form-zone-desc" rows="3" placeholder="Brief details about room purpose and noise mitigation requirements..."
+                              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-red-500"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" onclick="ui.closeModal('modal-zone-form')" class="px-5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" id="zone-form-submit-btn" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-lg">
+                        Save Zone Node
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (Project: silentalert-6a832) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+    <script src="js/firebase.js"></script>
+
+    <!-- Core Scripts (Ordered Dependency Flow) -->
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

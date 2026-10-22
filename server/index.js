@@ -34,7 +34,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static frontend files from project root
-if (!process.env.VERCEL) { app.use(express.static(path.join(__dirname, '..'))); }
+app.use(express.static(path.join(__dirname, '..', 'public'))); app.use(express.static(path.join(__dirname, '..')));
 
 // --- REST API ROUTES ---
 app.use('/api/auth', authRoutes);
