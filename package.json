@@ -2,7 +2,6 @@
     "name":  "silentalert-platform",
     "version":  "2.0.0",
     "description":  "Enterprise-grade IoT Acoustic Noise Monitoring \u0026 Alert System with Arduino Nano integration",
-    "main":  "server/index.js",
     "scripts":  {
                     "start":  "node server/index.js",
                     "seed":  "node server/seed.js",
