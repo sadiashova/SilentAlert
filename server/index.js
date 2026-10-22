@@ -21,8 +21,8 @@ const noiseController = require('./controllers/noiseController');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to Database
-connectDB();
+// Connect to Database (only in standalone mode)
+if (!process.env.VERCEL) { connectDB(); }
 
 // Core Middleware
 app.use(cors({
