@@ -236,7 +236,7 @@ const app = {
                 <div class="p-5 flex-1 flex flex-col">
                     <div class="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
                         <span class="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">${zone.category || 'Facility'}</span>
-                        <span>â€¢</span>
+                        <span>&bull;</span>
                         <span class="truncate"><i class="fas fa-map-marker-alt text-red-500 mr-1"></i>${zone.location}</span>
                     </div>
 
@@ -470,7 +470,7 @@ const app = {
                                         <img src="${rel.image}" class="w-12 h-12 rounded-lg object-cover">
                                         <div class="overflow-hidden">
                                             <div class="text-xs font-bold text-slate-800 dark:text-white truncate">${rel.name}</div>
-                                            <div class="text-[11px] text-slate-500">${rel.currentLevel} dB â€¢ Limit ${rel.threshold} dB</div>
+                                            <div class="text-[11px] text-slate-500">${rel.currentLevel} dB &bull; Limit ${rel.threshold} dB</div>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -831,8 +831,46 @@ const app = {
         });
     },
 
-    // --- LIVE TELEMETRY STREAM & ARDUINO NANO SENSOR POLLING ---
+    // --- LIVE TELEMETRY STREAM & REAL-TIME AUTO SIMULATION ---
     startTelemetryPolling() {
+        if (this.pollingTimer) clearInterval(this.pollingTimer);
+
+        const tick = async () => {
+            try {
+                // Generate realistic live micro-variations
+                const randOffset = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+                const lib = Math.max(35, 45 + randOffset(-6, 8));
+                const cls = Math.max(40, 58 + randOffset(-8, 14));
+                const lab = Math.max(38, 52 + randOffset(-5, 12));
+                const conf = Math.max(42, 60 + randOffset(-7, 16));
+                const avg = Math.round((lib + cls + lab + conf) / 4);
+
+                // Send live telemetry to backend
+                await api.noise.log({
+                    Library: lib,
+                    Classroom: cls,
+                    Lab: lab,
+                    ConferenceRoom: conf,
+                    averageDecibel: avg,
+                    deviceId: 'SILENTALERT_LIVE_STREAM'
+                });
+
+                // Update heatmap if visible
+                this.updateHeatmap({ Library: lib, Classroom: cls, Lab: lab, ConferenceRoom: conf });
+
+                // Update live cards if dashboard overview is active
+                if (this.currentPage === 'dashboard') {
+                    this.loadDashboardZoneCards();
+                }
+            } catch (err) {
+                // background telemetry
+            }
+        };
+
+        tick();
+        this.pollingTimer = setInterval(tick, 3500);
+        return;
+    }
         if (this.pollingTimer) clearInterval(this.pollingTimer);
 
         const poll = async () => {
