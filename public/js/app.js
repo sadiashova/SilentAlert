@@ -373,7 +373,7 @@ const app = {
                     <!-- Media Section: Gallery / Slider -->
                     <div>
                         <div class="h-64 sm:h-80 w-full rounded-2xl overflow-hidden bg-slate-900 relative">
-                            <img id="detail-main-img" src="${galleryImgs[0]}" alt="${zone.name}" class="w-full h-full object-cover">
+                            <img id="detail-main-img" src="${galleryImgs[0]}" alt="${zone.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80';" class="w-full h-full object-cover">
                             <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
                                 <div class="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 text-white">
                                     <h2 class="text-xl font-bold">${zone.name}</h2>

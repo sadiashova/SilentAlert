@@ -79,9 +79,9 @@ const initialZones = [
         capacity: 35,
         rating: 4.8,
         description: 'Vibration and high-frequency acoustic monitoring lab hosting atomic force microscopy and micro-electronic prototyping stations.',
-        image: '/images/robotics-lab.jpg',
+        image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80',
         gallery: [
-            'https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
         ],
