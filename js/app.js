@@ -855,8 +855,27 @@ const app = {
                     deviceId: 'SILENTALERT_LIVE_STREAM'
                 });
 
-                // Update heatmap if visible
+                // Update heatmap
                 this.updateHeatmap({ Library: lib, Classroom: cls, Lab: lab, ConferenceRoom: conf });
+
+                // Check for priority alert banner
+                const vals = [lib, cls, lab, conf];
+                const maxVal = Math.max(...vals);
+                const alertBox = document.getElementById('priority-alert-box');
+
+                if (maxVal >= 70) {
+                    if (alertBox) {
+                        alertBox.classList.remove('hidden');
+                        alertBox.classList.add('flex');
+                        const roomSpan = document.getElementById('alert-room-name');
+                        const valSpan = document.getElementById('alert-db-val');
+                        if (roomSpan) roomSpan.innerText = 'Monitored Zone';
+                        if (valSpan) valSpan.innerText = maxVal;
+                    }
+                } else if (alertBox) {
+                    alertBox.classList.add('hidden');
+                    alertBox.classList.remove('flex');
+                }
 
                 // Update live cards if dashboard overview is active
                 if (this.currentPage === 'dashboard') {
@@ -869,43 +888,6 @@ const app = {
 
         tick();
         this.pollingTimer = setInterval(tick, 3500);
-        return;
-    }
-        if (this.pollingTimer) clearInterval(this.pollingTimer);
-
-        const poll = async () => {
-            try {
-                const logs = await api.noise.getLogs(10);
-                if (logs && logs.length > 0) {
-                    const latest = logs[0];
-                    this.updateHeatmap(latest);
-
-                    // Check for critical violations across zones
-                    const vals = [latest.Library, latest.Classroom, latest.Lab, latest.ConferenceRoom].filter(v => v);
-                    const maxVal = Math.max(...vals);
-                    const alertBox = document.getElementById('priority-alert-box');
-
-                    if (maxVal >= 70) {
-                        if (alertBox) {
-                            alertBox.classList.remove('hidden');
-                            alertBox.classList.add('flex');
-                            const roomSpan = document.getElementById('alert-room-name');
-                            const valSpan = document.getElementById('alert-db-val');
-                            if (roomSpan) roomSpan.innerText = 'Monitored Zone';
-                            if (valSpan) valSpan.innerText = maxVal;
-                        }
-                    } else if (alertBox) {
-                        alertBox.classList.add('hidden');
-                        alertBox.classList.remove('flex');
-                    }
-                }
-            } catch (e) {
-                // Background telemetry polling
-            }
-        };
-
-        poll();
-        this.pollingTimer = setInterval(poll, 3000);
     },
 
     // --- GLOBAL FORM SUBMISSION HANDLERS ---
